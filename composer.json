@@ -1,7 +1,7 @@
 {
 	"description": "LayMon adalah aplikasi monitoring pengiriman barang secara realtime menggunakan Google Maps API dan Codeigniter 3",
 	"name": "hexageek1337/laymon",
-	"type": "web",
+	"type": "website",
 	"homepage": "https://denny.my.id",
 	"license": "MIT",
 	"support": {
