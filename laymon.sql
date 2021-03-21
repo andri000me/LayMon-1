@@ -24,22 +24,131 @@ CREATE TABLE IF NOT EXISTS `ci_sessions` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Table structure for table `user`
+-- Table structure for table `tb_user`
 --
-DROP TABLE IF EXISTS `user`;
-CREATE TABLE `user` (
-  `id_user` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `username_user` varchar(20) NOT NULL,
-  `password_user` varchar(73) NOT NULL,
+DROP TABLE IF EXISTS `tb_user`;
+CREATE TABLE `tb_user` (
+  `id_user` bigint(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `username_user` varchar(30) NOT NULL,
+  `password_user` varchar(60) NOT NULL,
+  `level_user` ENUM('Admin','Supir','Pelanggan') NOT NULL,
   `tglbuat_user` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `user` (`id_user`,`username_user`, `password_user`, `tglbuat_user`) VALUES
-(1,'denny', '$2y$10$WNEjLV3zNWY1j/kQaoBcYeQq2C9I7wsd96q2IPpwQqhsNUXR7VAle', NOW());
+INSERT INTO `tb_user` (`id_user`,`username_user`, `password_user`, `level_user`, `tglbuat_user`) VALUES
+(1,'denny', '$2y$10$WNEjLV3zNWY1j/kQaoBcYeQq2C9I7wsd96q2IPpwQqhsNUXR7VAle', 'Admin', NOW()),
+(2,'dadang', '$2y$10$WNEjLV3zNWY1j/kQaoBcYeQq2C9I7wsd96q2IPpwQqhsNUXR7VAle', 'Supir', NOW()),
+(3,'zarshop', '$2y$10$WNEjLV3zNWY1j/kQaoBcYeQq2C9I7wsd96q2IPpwQqhsNUXR7VAle', 'Pelanggan', NOW());
+
+--
+-- Table structure for table `tb_supir`
+--
+DROP TABLE IF EXISTS `tb_supir`;
+CREATE TABLE `tb_supir` (
+  `id_supir` bigint(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `id_user` bigint(11) NOT NULL,
+  `nama_supir` varchar(70) NOT NULL,
+  `nohp_supir` varchar(13) NOT NULL,
+  `alamat_supir` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `tb_supir` (`id_supir`,`id_user`, `nama_supir`, `nohp_supir`, `alamat_supir`) VALUES
+(1,2, 'Dadang Kipas', '087845621321', 'Jln. Merdeka Timur No 15');
+
+--
+-- Table structure for table `tb_pelanggan`
+--
+DROP TABLE IF EXISTS `tb_pelanggan`;
+CREATE TABLE `tb_pelanggan` (
+  `id_pelanggan` bigint(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `id_user` bigint(11) NOT NULL,
+  `nama_pelanggan` varchar(70) NOT NULL,
+  `nohp_pelanggan` varchar(13) NOT NULL,
+  `alamat_pelanggan` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `tb_pelanggan` (`id_pelanggan`,`id_user`, `nama_pelanggan`, `nohp_pelanggan`, `alamat_pelanggan`) VALUES
+(1,3, 'PT. Zaruko Store', '085241821321', 'Jln. Merdeka Barat No 12');
+
+--
+-- Table structure for table `tb_mobil`
+--
+DROP TABLE IF EXISTS `tb_mobil`;
+CREATE TABLE `tb_mobil` (
+  `id_mobil` bigint(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `nopol_mobil` varchar(10) NOT NULL,
+  `merk_mobil` varchar(70) NOT NULL,
+  `kapasitas_mobil` ENUM('Besar','Sedang','Kecil') NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `tb_mobil` (`id_mobil`,`nopol_mobil`, `merk_mobil`, `kapasitas_mobil`) VALUES
+(1,'B 7895 SH', 'Mitsubishi', 'Besar'),
+(2,'A 5925 OS', 'Mercedes Benz', 'Sedang');
+
+--
+-- Table structure for table `tb_monitoring`
+--
+DROP TABLE IF EXISTS `tb_monitoring`;
+CREATE TABLE `tb_monitoring` (
+  `id_mon` bigint(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `kodejalan_mon` varchar(20) NOT NULL,
+  `id_mobil` bigint(11) NOT NULL,
+  `id_supir` bigint(11) NOT NULL,
+  `id_pelanggan` bigint(11) NOT NULL,
+  `start_mon` text NOT NULL,
+  `end_mon` text NOT NULL,
+  `tglbuat_user` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table `tb_timeline`
+--
+DROP TABLE IF EXISTS `tb_timeline`;
+CREATE TABLE `tb_timeline` (
+  `id_timeline` bigint(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `id_mon` bigint(11) NOT NULL,
+  `currentloc_timeline` bigint(11) NOT NULL,
+  `tglcrloc_timeline` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Indexes for dumped tables
 --
 
 ALTER TABLE `ci_sessions` ADD PRIMARY KEY (`id`, `ip_address`);
-ALTER TABLE `user` ADD UNIQUE (`username_user`);
+ALTER TABLE `tb_user` ADD UNIQUE (`username_user`),ADD INDEX(`level_user`);
+ALTER TABLE `tb_supir` ADD UNIQUE (`id_user`),ADD UNIQUE (`nohp_supir`);
+ALTER TABLE `tb_pelanggan` ADD UNIQUE (`id_user`),ADD UNIQUE (`nohp_pelanggan`);
+ALTER TABLE `tb_mobil` ADD UNIQUE (`nopol_mobil`),ADD INDEX(`kapasitas_mobil`);
+ALTER TABLE `tb_monitoring` ADD UNIQUE (`kodejalan_mon`),ADD INDEX(`id_supir`),ADD INDEX(`id_pelanggan`),ADD INDEX(`id_mobil`),ADD INDEX(`tglbuat_user`);
+ALTER TABLE `tb_timeline` ADD INDEX(`id_mon`),ADD INDEX(`currentloc_timeline`),ADD INDEX(`tglcrloc_timeline`);
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `tb_monitoring`
+--
+ALTER TABLE `tb_monitoring`
+  ADD CONSTRAINT `tb_monitoring_ibfk_1` FOREIGN KEY (`id_pelanggan`) REFERENCES `tb_pelanggan` (`id_pelanggan`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `tb_monitoring_ibfk_2` FOREIGN KEY (`id_supir`) REFERENCES `tb_supir` (`id_supir`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `tb_monitoring_ibfk_3` FOREIGN KEY (`id_mobil`) REFERENCES `tb_mobil` (`id_mobil`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `tb_pelanggan`
+--
+ALTER TABLE `tb_pelanggan`
+  ADD CONSTRAINT `tb_pelanggan_ibfk_1` FOREIGN KEY (`id_user`) REFERENCES `tb_user` (`id_user`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `tb_supir`
+--
+ALTER TABLE `tb_supir`
+  ADD CONSTRAINT `tb_supir_ibfk_1` FOREIGN KEY (`id_user`) REFERENCES `tb_user` (`id_user`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `tb_timeline`
+--
+ALTER TABLE `tb_timeline`
+  ADD CONSTRAINT `tb_timeline_ibfk_1` FOREIGN KEY (`id_mon`) REFERENCES `tb_monitoring` (`id_mon`) ON DELETE CASCADE ON UPDATE CASCADE;
