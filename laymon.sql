@@ -29,16 +29,16 @@ CREATE TABLE IF NOT EXISTS `ci_sessions` (
 DROP TABLE IF EXISTS `tb_user`;
 CREATE TABLE `tb_user` (
   `id_user` bigint(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `username_user` varchar(30) NOT NULL,
+  `username_user` varchar(20) NOT NULL,
   `password_user` varchar(60) NOT NULL,
-  `level_user` ENUM('Admin','Supir','Pelanggan') NOT NULL,
-  `tglbuat_user` datetime NOT NULL
+  `level_user` ENUM('Admin','Supir','Pelanggan') NOT NULL DEFAULT 'Pelanggan',
+  `tglbuat_user` datetime NOT NULL DEFAULT NOW()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `tb_user` (`id_user`,`username_user`, `password_user`, `level_user`, `tglbuat_user`) VALUES
-(1,'denny', '$2y$10$WNEjLV3zNWY1j/kQaoBcYeQq2C9I7wsd96q2IPpwQqhsNUXR7VAle', 'Admin', NOW()),
-(2,'dadang', '$2y$10$WNEjLV3zNWY1j/kQaoBcYeQq2C9I7wsd96q2IPpwQqhsNUXR7VAle', 'Supir', NOW()),
-(3,'zarshop', '$2y$10$WNEjLV3zNWY1j/kQaoBcYeQq2C9I7wsd96q2IPpwQqhsNUXR7VAle', 'Pelanggan', NOW());
+(1,'denny', '$2y$10$KP0GKFO6R8Qdman9..HfmevKUvIpYosQZejuJ1eVwFL.VrBzbZCnK', 'Admin', NOW()),
+(2,'dadang', '$2y$10$RgLFDkqre3RyQp/omp3szev2rpnLcf8BeaWd30HdLfghDmTQFqFuO', 'Supir', NOW()),
+(3,'zarshop', '$2y$10$kbOleNVtOH9zv3Z0ufpuT.dNTnqagboyIB/VW8Ue6Dv.3qaVtZpYq', 'Pelanggan', NOW());
 
 --
 -- Table structure for table `tb_supir`
@@ -46,7 +46,7 @@ INSERT INTO `tb_user` (`id_user`,`username_user`, `password_user`, `level_user`,
 DROP TABLE IF EXISTS `tb_supir`;
 CREATE TABLE `tb_supir` (
   `id_supir` bigint(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `id_user` bigint(11) NOT NULL,
+  `id_user` bigint(11) NOT NULL DEFAULT 0,
   `nama_supir` varchar(70) NOT NULL,
   `nohp_supir` varchar(13) NOT NULL,
   `alamat_supir` text NOT NULL
@@ -61,7 +61,7 @@ INSERT INTO `tb_supir` (`id_supir`,`id_user`, `nama_supir`, `nohp_supir`, `alama
 DROP TABLE IF EXISTS `tb_pelanggan`;
 CREATE TABLE `tb_pelanggan` (
   `id_pelanggan` bigint(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `id_user` bigint(11) NOT NULL,
+  `id_user` bigint(11) NOT NULL DEFAULT 0,
   `nama_pelanggan` varchar(70) NOT NULL,
   `nohp_pelanggan` varchar(13) NOT NULL,
   `alamat_pelanggan` text NOT NULL
@@ -91,10 +91,10 @@ INSERT INTO `tb_mobil` (`id_mobil`,`nopol_mobil`, `merk_mobil`, `kapasitas_mobil
 DROP TABLE IF EXISTS `tb_monitoring`;
 CREATE TABLE `tb_monitoring` (
   `id_mon` bigint(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `kodejalan_mon` varchar(20) NOT NULL,
-  `id_mobil` bigint(11) NOT NULL,
-  `id_supir` bigint(11) NOT NULL,
-  `id_pelanggan` bigint(11) NOT NULL,
+  `kodejalan_mon` varchar(13) NOT NULL,
+  `id_mobil` bigint(11) NOT NULL DEFAULT 0,
+  `id_supir` bigint(11) NOT NULL DEFAULT 0,
+  `id_pelanggan` bigint(11) NOT NULL DEFAULT 0,
   `start_mon` text NOT NULL,
   `end_mon` text NOT NULL,
   `tglbuat_user` datetime NOT NULL
