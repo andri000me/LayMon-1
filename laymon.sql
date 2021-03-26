@@ -97,6 +97,7 @@ CREATE TABLE `tb_monitoring` (
   `id_pelanggan` bigint(11) NOT NULL DEFAULT 0,
   `start_mon` text NOT NULL,
   `end_mon` text NOT NULL,
+  `level_mon` ENUM('Created','Progress','Completed') NOT NULL,
   `tglbuat_user` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -120,7 +121,7 @@ ALTER TABLE `tb_user` ADD UNIQUE (`username_user`),ADD INDEX(`level_user`);
 ALTER TABLE `tb_supir` ADD UNIQUE (`id_user`),ADD UNIQUE (`nohp_supir`);
 ALTER TABLE `tb_pelanggan` ADD UNIQUE (`id_user`),ADD UNIQUE (`nohp_pelanggan`);
 ALTER TABLE `tb_mobil` ADD UNIQUE (`nopol_mobil`),ADD INDEX(`kapasitas_mobil`);
-ALTER TABLE `tb_monitoring` ADD UNIQUE (`kodejalan_mon`),ADD INDEX(`id_supir`),ADD INDEX(`id_pelanggan`),ADD INDEX(`id_mobil`),ADD INDEX(`tglbuat_user`);
+ALTER TABLE `tb_monitoring` ADD UNIQUE (`kodejalan_mon`),ADD INDEX(`id_supir`),ADD INDEX(`id_pelanggan`),ADD INDEX(`id_mobil`),ADD INDEX(`level_mon`),ADD INDEX(`tglbuat_user`);
 ALTER TABLE `tb_timeline` ADD INDEX(`id_mon`),ADD INDEX(`currentloc_timeline`),ADD INDEX(`tglcrloc_timeline`);
 
 --
