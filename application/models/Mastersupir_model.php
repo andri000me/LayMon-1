@@ -17,15 +17,10 @@ class Mastersupir_model extends CI_Model {
 		parent::__construct();
 	}
 
-	public function ambilData_Supir(){
+	public function ambilData(){
 		$query = $this->db->get($this->tabel_supir);
 		return $query->result_array();
 	}
-
-    public function ambilData_User($id){
-        $query = $this->db->get($this->tabel_user);
-        return $query->result_array();
-    }
 
     public function cariData_User($id){
         $this->db->from($this->tabel_user);
@@ -48,7 +43,7 @@ class Mastersupir_model extends CI_Model {
                 ->from($this->tabel_supir)
                 ->get();
 
-        return $query->num_rows();
+        return $query->count();
     }
 
     public function simpanData($data = array()){

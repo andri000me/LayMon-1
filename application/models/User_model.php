@@ -27,16 +27,42 @@ class User_model extends CI_Model {
 	 * @param mixed $password
 	 * @return bool true on success, false on failure
 	 */
-	public function create_user($username, $password, $level) {
-
+	public function create_user($data = array()) {
 		$dataMasuk = array(
-			'username_user' => $username,
-			'password_user' => $this->hPass($password),
-			'level_user' => $level,
+			'username_user' => $data['username_user'],
+			'password_user' => $this->hPass($data['password_user']),
+			'level_user' => $data['level_user'],
 		);
 
 		return $this->db->insert($this->tabel, $dataMasuk);
+	}
 
+	public function getUsername($id) {
+		$this->db->select('username_user');
+		$this->db->from($this->tabel);
+		$this->db->where('id_user', $id);
+
+		return $this->db->get()->row('username_user');
+	}
+
+	public function updatePass($data = array()) {
+		$dataMasuk = array(
+			'id_user' => $data['id_user'],
+			'password_user' => $this->hPass($data['password_user'])
+		);
+
+		$this->db->where('id_user', $data['id_user']);
+		return $this->db->update($this->tabel, $dataMasuk);
+
+	}
+
+	public function resetPass($data = array()) {
+		$dataMasuk = array(
+			'password_user' => $this->hPass($data['username_user'].'123')
+		);
+
+		$this->db->where('id_user', $data['id_user']);
+		return $this->db->update($this->tabel, $dataMasuk);
 	}
 
 	/**
@@ -90,10 +116,65 @@ class User_model extends CI_Model {
 
 	}
 
-	public function akunTersedia(){
-        $query = $this->db->query("SELECT * FROM tb_user WHERE id_user NOT IN(SELECT id_user FROM tb_supir) AND id_user NOT IN(SELECT id_user FROM tb_pelanggan) AND level_user != 'Admin'");
+	public function akunTersedia_supir(){
+        $query = $this->db->query("SELECT * FROM tb_user WHERE id_user NOT IN(SELECT id_user FROM tb_supir) AND id_user NOT IN(SELECT id_user FROM tb_pelanggan) AND level_user = 'Supir'");
 
         return $query->result_array();
+    }
+
+    public function akunTersedia_supirNum(){
+        $query = $this->db->query("SELECT * FROM tb_user WHERE id_user NOT IN(SELECT id_user FROM tb_supir) AND id_user NOT IN(SELECT id_user FROM tb_pelanggan) AND level_user = 'Supir'");
+
+        return $query->num_rows();
+    }
+
+    public function akunTersedia_pelanggan(){
+        $query = $this->db->query("SELECT * FROM tb_user WHERE id_user NOT IN(SELECT id_user FROM tb_supir) AND id_user NOT IN(SELECT id_user FROM tb_pelanggan) AND level_user = 'Pelanggan'");
+
+        return $query->result_array();
+    }
+
+    public function akunTersedia_pelangganNum(){
+        $query = $this->db->query("SELECT * FROM tb_user WHERE id_user NOT IN(SELECT id_user FROM tb_supir) AND id_user NOT IN(SELECT id_user FROM tb_pelanggan) AND level_user = 'Pelanggan'");
+
+        return $query->num_rows();
+    }
+
+    public function ambilData(){
+		$query = $this->db->get($this->tabel);
+		return $query->result_array();
+	}
+
+	public function updateData($data = array()){
+        $this->db->where('id_user', $data['id_user']);
+        $this->db->update($this->tabel, $data);
+
+        return TRUE;
+    }
+
+    public function cariData($id){
+        $this->db->from($this->tabel);
+        $this->db->where('id_user', $id);
+        $query = $this->db->get();
+
+        return $query->result_array();
+    }
+
+    public function validasiAccount($id){
+        $query = $this->db->query("SELECT id_user FROM tb_user WHERE id_user NOT IN(SELECT id_user FROM tb_supir) AND id_user NOT IN(SELECT id_user FROM tb_pelanggan) AND id_user = ?", $id);
+
+        return $query->num_rows();
+    }
+
+    public function hapusData($id){
+        $this->db->where('id_user', $id);
+        $this->db->delete($this->tabel);
+        if ($this->db->affected_rows() == 1) {
+
+            return TRUE;
+        } else {
+            return FALSE;
+        }
     }
 
 	/**

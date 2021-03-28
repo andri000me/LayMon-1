@@ -9,6 +9,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | Version 1.0                                                             |
 |_________________________________________________________________________|
 */
+$config['laymon_version'] = '1.0-Alpha';
 
 $config['laymon_judul'] = 'LayMon'; // insert title your website
 $config['laymon_slogan'] = 'Keep Protect Customer Order Safe'; // insert slogan your website

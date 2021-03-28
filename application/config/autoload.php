@@ -89,7 +89,7 @@ $autoload['drivers'] = array('cache');
 |
 |	$autoload['helper'] = array('url', 'file');
 */
-$autoload['helper'] = array('url','file','form','date','text','string','cookie');
+$autoload['helper'] = array('url','file','form','date','text','string','cookie','security');
 
 /*
 | -------------------------------------------------------------------
@@ -125,11 +125,11 @@ $autoload['language'] = array();
 | -------------------------------------------------------------------
 | Prototype:
 |
-|	$autoload['model'] = array('first_model', 'second_model');
+|	$autoload['model'] = array('first_model', 'second_model','masterpengiriman_model');
 |
 | You can also supply an alternative model name to be assigned
 | in the controller:
 |
 |	$autoload['model'] = array('first_model' => 'first');
 */
-$autoload['model'] = array('user_model');
+$autoload['model'] = array('user_model','mastermobil_model','mastersupir_model','masterpelanggan_model');

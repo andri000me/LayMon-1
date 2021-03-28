@@ -3,27 +3,22 @@
 * Model News
 */
 class Masterpelanggan_model extends CI_Model {
-	protected $tabel_supir = 'tb_supir';
+    protected $tabel_supir = 'tb_supir';
     protected $tabel_user = 'tb_user';
     protected $tabel_pelanggan = 'tb_pelanggan';
-	/**
-	 * __construct function.
-	 *
-	 * @access public
-	 * @return void
-	 */
+    /**
+     * __construct function.
+     *
+     * @access public
+     * @return void
+     */
 
-	public function __construct() {
-		parent::__construct();
-	}
+    public function __construct() {
+        parent::__construct();
+    }
 
-	public function ambilData_Supir(){
-		$query = $this->db->get($this->tabel_pelanggan);
-		return $query->result_array();
-	}
-
-    public function ambilData_User($id){
-        $query = $this->db->get($this->tabel_user);
+    public function ambilData(){
+        $query = $this->db->get($this->tabel_pelanggan);
         return $query->result_array();
     }
 
@@ -35,20 +30,20 @@ class Masterpelanggan_model extends CI_Model {
         return $query->result_array();
     }
 
-	public function cariData_Supir($id){
-		$this->db->from($this->tabel_pelanggan);
-		$this->db->where('id_supir', $id);
-		$query = $this->db->get();
+    public function cariData_Pelanggan($id){
+        $this->db->from($this->tabel_pelanggan);
+        $this->db->where('id_pelanggan', $id);
+        $query = $this->db->get();
 
-		return $query->result_array();
-	}
+        return $query->result_array();
+    }
 
     public function jumlahData(){
         $query = $this->db->select('*')
                 ->from($this->tabel_pelanggan)
                 ->get();
 
-        return $query->num_rows();
+        return $query->count();
     }
 
     public function simpanData($data = array()){
@@ -58,20 +53,20 @@ class Masterpelanggan_model extends CI_Model {
     }
 
     public function updateData($data = array()){
-        $this->db->where('id_supir', $data['id_supir']);
+        $this->db->where('id_pelanggan', $data['id_pelanggan']);
         $this->db->update($this->tabel_pelanggan, $data);
 
         return TRUE;
     }
 
     public function hapusData($id){
-        $this->db->where('id_supir', $id);
+        $this->db->where('id_pelanggan', $id);
         $this->db->delete($this->tabel_pelanggan);
         if ($this->db->affected_rows() == 1) {
 
             return TRUE;
         } else {
-        	return FALSE;
+            return FALSE;
         }
     }
 }

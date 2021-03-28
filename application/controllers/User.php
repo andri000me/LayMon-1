@@ -18,6 +18,16 @@ class User extends CI_Controller {
 		parent::__construct();
 	}
 
+	private function checkSession(){
+		if($this->session->userdata('logged_in') === TRUE AND $this->session->userdata('role') === 'Admin'){
+			redirect(base_url("laymon"), 'refresh');
+		} elseif ($this->session->userdata('logged_in') === TRUE AND $this->session->userdata('role') === 'Supir') {
+			redirect(base_url("supmon"), 'refresh');
+		} elseif ($this->session->userdata('logged_in') === TRUE AND $this->session->userdata('role') === 'Pelanggan') {
+			redirect(base_url("pelmon"), 'refresh');
+		}
+	}
+
 	/**
 	 * login function.
 	 *
@@ -26,19 +36,13 @@ class User extends CI_Controller {
 	 */
 	public function login() {
 		// check session
-		if($this->session->userdata('logged_in') === TRUE AND $this->session->userdata('role') === 'Admin'){
-			redirect(base_url("laymon"), 'refresh');
-		} elseif ($this->session->userdata('logged_in') === TRUE AND $this->session->userdata('role') === 'Supir') {
-			redirect(base_url("supir"), 'refresh');
-		} elseif ($this->session->userdata('logged_in') === TRUE AND $this->session->userdata('role') === 'Pelanggan') {
-			redirect(base_url("dashboard"), 'refresh');
-		}
+		$this->checkSession();
 
 		// create the data object
 		$data = new stdClass();
 
 		// set validation rules
-		$this->form_validation->set_rules('username', 'Username', 'trim|required|alpha_numeric|min_length[5]|max_length[20]');
+		$this->form_validation->set_rules('username', 'Username', 'trim|required|alpha_numeric|max_length[20]');
 		$this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[8]');
 
 		if ($this->form_validation->run() == false) {
@@ -82,6 +86,28 @@ class User extends CI_Controller {
 
 		}
 
+	}
+
+	public function profile(){
+		if($this->session->userdata('logged_in') === TRUE AND $this->session->userdata('role') === 'Admin'){
+			$data['home_url'] = 'laymon';
+		} elseif ($this->session->userdata('logged_in') === TRUE AND $this->session->userdata('role') === 'Supir') {
+			$data['home_url'] = 'supmon';
+		} elseif ($this->session->userdata('logged_in') === TRUE AND $this->session->userdata('role') === 'Pelanggan') {
+			$data['home_url'] = 'pelmon';
+		}
+
+		$data ['sub_title'] = 'Profile';
+		$data['master'] = 'profile';
+
+		$data['csrf'] = array(
+			'name' => $this->security->get_csrf_token_name(),
+			'hash' => $this->security->get_csrf_hash()
+		);
+
+		$this->load->view('header', $data);
+		$this->load->view('profile', $data);
+		$this->load->view('footer', $data);
 	}
 
 	/**

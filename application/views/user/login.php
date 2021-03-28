@@ -12,7 +12,7 @@
 <link href='https://fonts.googleapis.com' rel='preconnect'>
 <link href='https://www.googletagmanager.com' rel='preconnect'>
 <link rel="preconnect" href="https://code.ionicframework.com/">
-<link rel="shortcut icon" href="<?=base_url('assets/laymon.ico')?>">
+<link rel="shortcut icon" href="<?=base_url('assets/favicon.ico')?>">
 <meta name="robots" content="index, follow" />
 <meta name="author" content="<?=$this->config->item('laymon_author')?>">
 <meta name="description" content="<?=$this->config->item('laymon_deskripsi')?>"/>
