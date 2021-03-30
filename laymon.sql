@@ -38,7 +38,9 @@ CREATE TABLE `tb_user` (
 INSERT INTO `tb_user` (`id_user`,`username_user`, `password_user`, `level_user`, `tglbuat_user`) VALUES
 (1,'denny', '$2y$10$KP0GKFO6R8Qdman9..HfmevKUvIpYosQZejuJ1eVwFL.VrBzbZCnK', 'Admin', NOW()),
 (2,'dadang', '$2y$10$RgLFDkqre3RyQp/omp3szev2rpnLcf8BeaWd30HdLfghDmTQFqFuO', 'Supir', NOW()),
-(3,'zarshop', '$2y$10$kbOleNVtOH9zv3Z0ufpuT.dNTnqagboyIB/VW8Ue6Dv.3qaVtZpYq', 'Pelanggan', NOW());
+(3,'zarshop', '$2y$10$kbOleNVtOH9zv3Z0ufpuT.dNTnqagboyIB/VW8Ue6Dv.3qaVtZpYq', 'Pelanggan', NOW()),
+(4,'dodong', '$2y$10$wODYfaXb08Oj4exoN8/bCeM86K0fi105VWJawU/tUGYweBhSlw4kO', 'Supir', NOW()),
+(5,'zorshap', '$2y$10$kacJj5mQ8yugG75OwSu2k.buF5wRYCZzcHkNYUzgVFbaFmayrpnD6', 'Pelanggan', NOW());
 
 --
 -- Table structure for table `tb_supir`
@@ -53,7 +55,8 @@ CREATE TABLE `tb_supir` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `tb_supir` (`id_supir`,`id_user`, `nama_supir`, `nohp_supir`, `alamat_supir`) VALUES
-(1,2, 'Dadang Kipas', '087845621321', 'Jln. Merdeka Timur No 15');
+(1,2, 'Dadang Kipas', '087845621321', 'Jln. Flamboyan Nusa No 15'),
+(2,4, 'Dodong Karim', '085445621321', 'Jln. Kencana Mas No 14');
 
 --
 -- Table structure for table `tb_pelanggan`
@@ -68,7 +71,8 @@ CREATE TABLE `tb_pelanggan` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `tb_pelanggan` (`id_pelanggan`,`id_user`, `nama_pelanggan`, `nohp_pelanggan`, `alamat_pelanggan`) VALUES
-(1,3, 'PT. Zaruko Store', '085241821321', 'Jln. Merdeka Barat No 12');
+(1,3, 'PT. Zaruko Store', '085241821321', 'Jln. Merdeka Barat No 12'),
+(2,5, 'PT. Zoruka Sharp', '081241821321', 'Jln. Merdeka Timur No 13');
 
 --
 -- Table structure for table `tb_mobil`
@@ -83,7 +87,8 @@ CREATE TABLE `tb_mobil` (
 
 INSERT INTO `tb_mobil` (`id_mobil`,`nopol_mobil`, `merk_mobil`, `kapasitas_mobil`) VALUES
 (1,'B 7895 SH', 'Mitsubishi', 'Besar'),
-(2,'A 5925 OS', 'Mercedes Benz', 'Sedang');
+(2,'A 5925 OS', 'Mercedes Benz', 'Sedang'),
+(3,'A 5735 VE', 'Isuzu', 'Kecil');
 
 --
 -- Table structure for table `tb_monitoring`
@@ -97,9 +102,18 @@ CREATE TABLE `tb_monitoring` (
   `id_pelanggan` bigint(11) NOT NULL DEFAULT 0,
   `start_mon` text NOT NULL,
   `end_mon` text NOT NULL,
-  `level_mon` ENUM('Created','Progress','Completed') NOT NULL,
-  `tglbuat_user` datetime NOT NULL
+  `status_mon` ENUM('Created','Approved','Progress','Arrived','Confirmed','Completed') NOT NULL,
+  `tglbuat_user` datetime NOT NULL DEFAULT NOW()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `tb_monitoring` (`id_mon`,`kodejalan_mon`, `id_mobil`, `id_supir`, `id_pelanggan`, `start_mon`, `end_mon`, `status_mon`, `tglbuat_user`) VALUES
+(1,'SJ00001/01/21', 1, 1, 2, '-6.2814669004211225,106.53495758217373', '-6.395774453370429,106.8506481888934', 'Completed', NOW()),
+(2,'SJ00001/02/21', 2, 2, 1, '-6.2814669004211225,106.53495758217373', '-6.174889937373512,106.82197098544648', 'Confirmed', NOW()),
+(3,'SJ00001/03/21', 3, 1, 2, '-6.2814669004211225,106.53495758217373', '-6.395774453370429,106.8506481888934', 'Arrived', NOW()),
+(4,'SJ00002/03/21', 1, 2, 2, '-6.2814669004211225,106.53495758217373', '-6.395774453370429,106.8506481888934', 'Progress', NOW()),
+(5,'SJ00003/03/21', 2, 1, 1, '-6.2814669004211225,106.53495758217373', '-6.174889937373512,106.82197098544648', 'Approved', NOW()),
+(6,'SJ00004/03/21', 3, 2, 2, '-6.2814669004211225,106.53495758217373', '-6.395774453370429,106.8506481888934', 'Created', NOW()),
+(7,'SJ00005/03/21', 1, 1, 1, '-6.2814669004211225,106.53495758217373', '-6.174889937373512,106.82197098544648', 'Created', NOW());
 
 --
 -- Table structure for table `tb_timeline`
@@ -121,7 +135,7 @@ ALTER TABLE `tb_user` ADD UNIQUE (`username_user`),ADD INDEX(`level_user`);
 ALTER TABLE `tb_supir` ADD UNIQUE (`id_user`),ADD UNIQUE (`nohp_supir`);
 ALTER TABLE `tb_pelanggan` ADD UNIQUE (`id_user`),ADD UNIQUE (`nohp_pelanggan`);
 ALTER TABLE `tb_mobil` ADD UNIQUE (`nopol_mobil`),ADD INDEX(`kapasitas_mobil`);
-ALTER TABLE `tb_monitoring` ADD UNIQUE (`kodejalan_mon`),ADD INDEX(`id_supir`),ADD INDEX(`id_pelanggan`),ADD INDEX(`id_mobil`),ADD INDEX(`level_mon`),ADD INDEX(`tglbuat_user`);
+ALTER TABLE `tb_monitoring` ADD UNIQUE (`kodejalan_mon`),ADD INDEX(`id_supir`),ADD INDEX(`id_pelanggan`),ADD INDEX(`id_mobil`),ADD INDEX(`status_mon`),ADD INDEX(`tglbuat_user`);
 ALTER TABLE `tb_timeline` ADD INDEX(`id_mon`),ADD INDEX(`currentloc_timeline`),ADD INDEX(`tglcrloc_timeline`);
 
 --
