@@ -91,6 +91,19 @@ if (isset($master) AND $master === 'mobil') {
   edituserUrl = '<?=$editUser?>';
 </script>
 <script src="<?=base_url('assets/dist/js/master/'.$master.'.js')?>"></script>
+<?php } elseif (isset($master) AND $master === 'pengiriman') {
+  if (isset($masterData) AND $masterData === 'created') {
+    $read = base_url('apilm/pengiriman/created/baca');
+  } elseif (isset($masterData) AND $masterData === 'confirmed') {
+    $read = base_url('apilm/pengiriman/confirmed/baca');
+  } else {
+    $read = '';
+  }
+  $dataMap = base_url('apilm/pengiriman/pemetaanmap'); ?>
+<script type="text/javascript">
+  let readUrl = '<?=$read?>',dataMapUrl = '<?=$dataMap?>';
+</script>
+<script src="<?=base_url('assets/dist/js/'.$master.'.js')?>"></script>
 <?php }
 
 if (isset($master) AND $master === 'profile') { ?>

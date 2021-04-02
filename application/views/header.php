@@ -10,6 +10,7 @@
 <link href='https://fonts.googleapis.com' rel='preconnect'>
 <link href='https://ajax.googleapis.com' rel='preconnect'>
 <link href='https://fonts.googleapis.com' rel='preconnect'>
+<link href='https://maps.google.com' rel='preconnect'>
 <link href='https://www.googletagmanager.com' rel='preconnect'>
 <link rel="preconnect" href="https://code.ionicframework.com/">
 <link rel="shortcut icon" href="<?=base_url('assets/favicon.ico')?>">
@@ -43,8 +44,13 @@
 <link rel="stylesheet" href="<?=base_url('assets/plugins/summernote/summernote-bs4.min.css')?>">
 <!-- Sweetalert2 -->
 <link rel="stylesheet" href="<?=base_url('assets/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css')?>">
-<!-- Google Font: Source Sans Pro -->
+<!-- Leaflet -->
+<link rel="stylesheet" href="<?=base_url('assets/plugins/leaflet/leaflet.css')?>">
+<!-- Custom CSS -->
 <link rel="stylesheet" href="<?=base_url('assets/dist/css/custom.css')?>">
+<?php if(isset($master) AND $master === 'pengiriman'){ ?>
+<script src="<?=base_url('assets/plugins/leaflet/leaflet.js')?>"></script>
+<?php } ?>
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -106,6 +112,7 @@
               </p>
             </a>
           </li>
+          <?php if($this->session->userdata('role') === 'Admin'){ ?>
           <li class="nav-item has-treeview">
             <a href="javascript:void(0)" class="nav-link">
               <i class="nav-icon fas fa-th"></i>
@@ -151,15 +158,15 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="<?=base_url($home_url.'/monitoring/live')?>" class="nav-link">
+                <a href="<?=base_url($home_url.'/pengiriman/created')?>" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Live Monitoring</p>
+                  <p>Created</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="<?=base_url($home_url.'/monitoring')?>" class="nav-link">
+                <a href="<?=base_url($home_url.'/pengiriman/confirmed')?>" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Completed</p>
+                  <p>Confirmed</p>
                 </a>
               </li>
             </ul>
@@ -172,6 +179,63 @@
               </p>
             </a>
           </li>
+          <?php } elseif($this->session->userdata('role') === 'Supir'){ ?>
+          <li class="nav-item has-treeview">
+            <a href="javascript:void(0)" class="nav-link">
+              <i class="nav-icon fas fa-tv"></i>
+              <p>
+                Pengiriman
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="<?=base_url($home_url.'/pengiriman/created')?>" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Created</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="<?=base_url($home_url.'/pengiriman/approved')?>" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Approved</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a href="<?=base_url($home_url.'/laporan')?>" class="nav-link">
+              <i class="nav-icon fas fa-chart-pie"></i>
+              <p>
+                Laporan
+              </p>
+            </a>
+          </li>
+          <?php } elseif($this->session->userdata('role') === 'Pelanggan'){ ?>
+          <li class="nav-item has-treeview">
+            <a href="javascript:void(0)" class="nav-link">
+              <i class="nav-icon fas fa-tv"></i>
+              <p>
+                Pengiriman
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="<?=base_url($home_url.'/pengiriman/arrived')?>" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Arrived</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="<?=base_url($home_url.'/pengiriman/approved')?>" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Completed</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <?php } ?>
         </ul>
       </nav>
       <!-- /.sidebar-menu -->

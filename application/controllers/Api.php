@@ -2,23 +2,6 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Api extends CI_Controller {
-
-	/**
-	 * Index Page for this controller.
-	 *
-	 * Maps to the following URL
-	 * 		http://example.com/index.php/welcome
-	 *	- or -
-	 * 		http://example.com/index.php/welcome/index
-	 *	- or -
-	 * Since this controller is set as the default controller in
-	 * config/routes.php, it's displayed at http://example.com/
-	 *
-	 * So any other public methods not prefixed with an underscore will
-	 * map to /index.php/welcome/<method_name>
-	 * @see https://codeigniter.com/user_guide/general/urls.html
-	 */
-
 	protected $result = array();
 
 	public function __construct() {
@@ -585,7 +568,7 @@ class Api extends CI_Controller {
 
 		if ($modelRead_pelanggan) {
 			$this->result['error'] = false;
-			$this->result['message'] = 'Data Supir';
+			$this->result['message'] = 'Data Pelanggan';
 
 			foreach ($modelRead_pelanggan as $valuePelanggan) {
 				if ($valuePelanggan['id_user'] === 0 OR empty($valuePelanggan['id_user'])) {
@@ -706,6 +689,171 @@ class Api extends CI_Controller {
 			$this->result['message'] = 'Data pelanggan gagal diupdate!';
 			$this->result['data'] = null;
 			$this->result['redirect'] = base_url('laymon/pelanggan');
+		}
+
+		echo json_encode($this->result, JSON_PRETTY_PRINT);
+	}
+
+	/*
+	* Pengiriman Controller
+	*/
+
+	public function pengiriman_dataMap(){
+		$this->checkSession();
+		$idM = intval($this->input->post('id'));
+
+		if (!empty($idM) AND is_numeric($idM)) {
+			$modelRead_datamap = $this->pengiriman_model->dataMap_pelanggan($idM)[0];
+
+			if ($modelRead_datamap) {
+				$this->result['error'] = false;
+				$this->result['message'] = 'Data Map Tujuan Pengiriman';
+				$this->result['data'] = $modelRead_datamap;
+			} else {
+				$this->result['error'] = true;
+				$this->result['message'] = 'Data Map tidak ditemukan';
+				$this->result['data'] = null;
+			}
+		} else {
+			$this->result['error'] = true;
+			$this->result['message'] = 'Data ID kosong atau bukan angka!';
+			$this->result['data'] = null;
+		}
+
+		echo json_encode($this->result, JSON_PRETTY_PRINT);
+	}
+
+	public function pengirimanCreated_read(){
+		$this->checkSession();
+		$modelRead_pengiriman = $this->pengiriman_model->ambilData_Status('Created');
+
+		if ($modelRead_pengiriman) {
+			$this->result['error'] = false;
+			$this->result['message'] = 'Data Pengiriman';
+
+			foreach ($modelRead_pengiriman as $valuePengiriman) {
+				if ($valuePengiriman['id_mobil'] === 0 OR empty($valuePengiriman['id_mobil'])) {
+					$nopol_mobil = '';
+				} else {
+					$modelReadNOPOL_mobil = $this->pengiriman_model->cariData_Mobil($valuePengiriman['id_mobil']);
+					
+					if ($modelReadNOPOL_mobil) {
+						$nopol_mobil = $modelReadNOPOL_mobil[0]['nopol_mobil'];
+					} else {
+						$nopol_mobil = '';
+					}
+				}
+
+				if ($valuePengiriman['id_pelanggan'] === 0 OR empty($valuePengiriman['id_pelanggan'])) {
+					$nama_pelanggan = '';
+				} else {
+					$modelReadNAMA_pelanggan = $this->pengiriman_model->cariData_Pelanggan($valuePengiriman['id_pelanggan']);
+					
+					if ($modelReadNAMA_pelanggan) {
+						$nama_pelanggan = $modelReadNAMA_pelanggan[0]['nama_pelanggan'];
+					} else {
+						$nama_pelanggan = '';
+					}
+				}
+
+				if ($valuePengiriman['id_supir'] === 0 OR empty($valuePengiriman['id_supir'])) {
+					$nama_supir = '';
+				} else {
+					$modelReadNAMA_supir = $this->pengiriman_model->cariData_Supir($valuePengiriman['id_supir']);
+					
+					if ($modelReadNAMA_supir) {
+						$nama_supir = $modelReadNAMA_supir[0]['nama_supir'];
+					} else {
+						$nama_supir = '';
+					}
+				}
+
+				$dataPengiriman[] = array(
+					'id_mon' => $valuePengiriman['id_mon'],
+					'kodejalan' => $valuePengiriman['kodejalan_mon'],
+					'nopol' => $nopol_mobil,
+					'supir' => $nama_supir,
+					'pelanggan' => $nama_pelanggan,
+					'start' => $valuePengiriman['start_mon'],
+					'end' => '<button type="button" class="btn btn-sm btn-success btn-flat" onclick="return dataMap('.$valuePengiriman['id_mon'].')">Show</button>',
+					'status' => '<span class="badge badge-info">'.$valuePengiriman['status_mon'].'</span>',
+					'tanggal' => $valuePengiriman['tglbuat_user'],
+					'action' => '<center><a href="'.base_url('laymon/pengiriman/created/agree/'.$valuePengiriman['id_mon']).'"><button type="button" class="btn btn-sm btn-success btn-flat">Approve</button></a></center>',
+				);
+			}
+			$this->result['data'] = $dataPengiriman;
+		} else {
+			$this->result['error'] = true;
+			$this->result['message'] = 'Data Pengiriman tidak ditemukan';
+			$this->result['data'] = null;
+		}
+
+		echo json_encode($this->result, JSON_PRETTY_PRINT);
+	}
+
+	public function pengirimanConfirmed_read(){
+		$this->checkSession();
+		$modelRead_pengiriman = $this->pengiriman_model->ambilData_Status('Confirmed');
+
+		if ($modelRead_pengiriman) {
+			$this->result['error'] = false;
+			$this->result['message'] = 'Data Pengiriman';
+
+			foreach ($modelRead_pengiriman as $valuePengiriman) {
+				if ($valuePengiriman['id_mobil'] === 0 OR empty($valuePengiriman['id_mobil'])) {
+					$nopol_mobil = '';
+				} else {
+					$modelReadNOPOL_mobil = $this->pengiriman_model->cariData_Mobil($valuePengiriman['id_mobil']);
+					
+					if ($modelReadNOPOL_mobil) {
+						$nopol_mobil = $modelReadNOPOL_mobil[0]['nopol_mobil'];
+					} else {
+						$nopol_mobil = '';
+					}
+				}
+
+				if ($valuePengiriman['id_pelanggan'] === 0 OR empty($valuePengiriman['id_pelanggan'])) {
+					$nama_pelanggan = '';
+				} else {
+					$modelReadNAMA_pelanggan = $this->pengiriman_model->cariData_Pelanggan($valuePengiriman['id_pelanggan']);
+					
+					if ($modelReadNAMA_pelanggan) {
+						$nama_pelanggan = $modelReadNAMA_pelanggan[0]['nama_pelanggan'];
+					} else {
+						$nama_pelanggan = '';
+					}
+				}
+
+				if ($valuePengiriman['id_supir'] === 0 OR empty($valuePengiriman['id_supir'])) {
+					$nama_supir = '';
+				} else {
+					$modelReadNAMA_supir = $this->pengiriman_model->cariData_Supir($valuePengiriman['id_supir']);
+					
+					if ($modelReadNAMA_supir) {
+						$nama_supir = $modelReadNAMA_supir[0]['nama_supir'];
+					} else {
+						$nama_supir = '';
+					}
+				}
+
+				$dataPengiriman[] = array(
+					'id_mon' => $valuePengiriman['id_mon'],
+					'kodejalan' => $valuePengiriman['kodejalan_mon'],
+					'nopol' => $nopol_mobil,
+					'supir' => $nama_supir,
+					'pelanggan' => $nama_pelanggan,
+					'start' => $valuePengiriman['start_mon'],
+					'end' => '<button type="button" class="btn btn-sm btn-success btn-flat" onclick="return dataMap('.$valuePengiriman['id_mon'].')">Show</button>',
+					'status' => '<span class="badge badge-info">'.$valuePengiriman['status_mon'].'</span>',
+					'tanggal' => $valuePengiriman['tglbuat_user'],
+					'action' => '<center><a href="'.base_url('laymon/pengiriman/confirmed/agree/'.$valuePengiriman['id_mon']).'"><button type="button" class="btn btn-sm btn-success btn-flat">Approve</button></a></center>',
+				);
+			}
+			$this->result['data'] = $dataPengiriman;
+		} else {
+			$this->result['error'] = true;
+			$this->result['message'] = 'Data Pengiriman tidak ditemukan';
+			$this->result['data'] = null;
 		}
 
 		echo json_encode($this->result, JSON_PRETTY_PRINT);

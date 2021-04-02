@@ -70,6 +70,9 @@ $route['apilm/pelanggan/ubahuser'] = 'api/masterpelanggan_updateUser';
 $route['apilm/user/simpan'] = 'api/masteruser_create';
 $route['apilm/user/baca'] = 'api/masteruser_read';
 $route['apilm/user/ubah'] = 'api/masteruser_update';
+$route['apilm/pengiriman/pemetaanmap'] = 'api/pengiriman_dataMap';
+$route['apilm/pengiriman/created/baca'] = 'api/pengirimanCreated_read';
+$route['apilm/pengiriman/confirmed/baca'] = 'api/pengirimanConfirmed_read';
 // Level One - Admin
 $route['laymon/profile'] = 'user/profile';
 $route['laymon'] = 'admin';
@@ -92,6 +95,9 @@ $route['laymon/user/create'] = 'admin/user_create';
 $route['laymon/user/view/(:num)'] = 'admin/user_update/$1';
 $route['laymon/user/delete/(:num)'] = 'admin/user_delete/$1';
 $route['laymon/user/reset/(:num)'] = 'admin/user_resetPass/$1';
+$route['laymon/pengiriman/(:any)'] = 'admin/pengiriman_Data/$1';
+$route['laymon/pengiriman/created/agree/(:num)'] = 'admin/pengiriman_createdApprove/$1';
+$route['laymon/pengiriman/confirmed/agree/(:num)'] = 'admin/pengiriman_confirmedApprove/$1';
 // Level Two - Supir
 $route['supmon/profile'] = 'user/profile';
 $route['supmon'] = 'supir';

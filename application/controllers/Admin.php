@@ -2,22 +2,6 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Admin extends CI_Controller {
-
-	/**
-	 * Index Page for this controller.
-	 *
-	 * Maps to the following URL
-	 * 		http://example.com/index.php/welcome
-	 *	- or -
-	 * 		http://example.com/index.php/welcome/index
-	 *	- or -
-	 * Since this controller is set as the default controller in
-	 * config/routes.php, it's displayed at http://example.com/
-	 *
-	 * So any other public methods not prefixed with an underscore will
-	 * map to /index.php/welcome/<method_name>
-	 * @see https://codeigniter.com/user_guide/general/urls.html
-	 */
 	public function __construct() {
 		parent::__construct();
 		$this->checkSession();
@@ -355,6 +339,72 @@ class Admin extends CI_Controller {
 		} else {
 			echo "<script>alert('Data Pelanggan gagal dihapus!')</script>";
 			redirect('laymon/pelanggan', 'refresh');
+		}
+	}
+
+	/*
+	* Pengiriman Controller
+	*/
+
+	public function pengiriman_Data($status = null){
+		if ($status === null) {
+			show_404();
+		} else {
+			if ($status === 'created') {
+				$data['home_url'] = 'laymon';
+				$data ['sub_title'] = 'Administrator';
+				$data['master'] = 'pengiriman';
+				$data['masterData'] = $status;
+
+				$this->load->view('header', $data);
+				$this->load->view('admin/pengiriman/pengiriman_data', $data);
+				$this->load->view('footer', $data);
+			} elseif ($status === 'confirmed') {
+				$data['home_url'] = 'laymon';
+				$data ['sub_title'] = 'Administrator';
+				$data['master'] = 'pengiriman';
+				$data['masterData'] = $status;
+
+				$this->load->view('header', $data);
+				$this->load->view('admin/pengiriman/pengiriman_data', $data);
+				$this->load->view('footer', $data);
+			} else {
+				show_404();
+			}
+		}
+	}
+
+	public function pengiriman_createdApprove($id){
+		$dataApprove = array(
+			'id_mon' => intval($id),
+			'status_mon' => 'Approved'
+		);
+
+		$modelApprove_pengiriman = $this->pengiriman_model->updateData($dataApprove);
+
+		if ($modelApprove_pengiriman) {
+			echo "<script>alert('Data pengiriman berhasil diapprove!')</script>";
+			redirect('laymon/pengiriman/created', 'refresh');
+		} else {
+			echo "<script>alert('Data pengiriman gagal diapprove!')</script>";
+			redirect('laymon/pengiriman/created', 'refresh');
+		}
+	}
+
+	public function pengiriman_confirmedApprove($id){
+		$dataApprove = array(
+			'id_mon' => intval($id),
+			'status_mon' => 'Completed'
+		);
+
+		$modelApprove_pengiriman = $this->pengiriman_model->updateData($dataApprove);
+
+		if ($modelApprove_pengiriman) {
+			echo "<script>alert('Data pengiriman berhasil dikonfirmasi!')</script>";
+			redirect('laymon/pengiriman/created', 'refresh');
+		} else {
+			echo "<script>alert('Data pengiriman gagal dikonfirmasi!')</script>";
+			redirect('laymon/pengiriman/created', 'refresh');
 		}
 	}
 }
