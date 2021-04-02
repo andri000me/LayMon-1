@@ -1,22 +1,37 @@
 let supir = $('#supir-data').DataTable({
         responsive: true,
-        ajax: {"url":readUrl,"dataSrc":'data'},
+        ajax: {
+            "url":readUrl,
+            "dataSrc": function(data){
+                if(data.data == null){
+                    return [];
+                } else {
+                    return data.data;
+                }
+            }
+        },
         columnDefs: [{
-            searcable: false,
+            searchable: false,
             orderable: false,
             targets: 0
         }],
         columns: [{
+            defaultContent: '',
             data: "id_supir"
         }, {
+            defaultContent: '',
             data: "nama_supir"
         }, {
+            defaultContent: '',
             data: "nohp_supir"
         }, {
+            defaultContent: '',
             data: "alamat_supir"
         }, {
+            defaultContent: '',
             data: "username_user"
         }, {
+            defaultContent: '',
             data: "action"
         }],
         "lengthChange": true,
@@ -48,7 +63,7 @@ $(document).ready(function () {
             data: $(".form-create").serialize(),
             success: (dataSimpan) => {
                 reloadTable();
-                if (dataSimpan.error === true) {
+                if (dataSimpan.errData === true) {
                     let errorList='';
 
                     Object.keys(dataSimpan.errorMsg).forEach(function(key) {
@@ -80,7 +95,7 @@ $(document).ready(function () {
             data: $(".form-update").serialize(),
             success: (dataUpdate) => {
                 reloadTable();
-                if (dataUpdate.error === true) {
+                if (dataUpdate.errData === true) {
                     let errorList='';
 
                     Object.keys(dataUpdate.errorMsg).forEach(function(key) {
@@ -112,7 +127,7 @@ $(document).ready(function () {
             data: $(".form-updateuser").serialize(),
             success: (dataUpdateUser) => {
                 reloadTable();
-                if (dataUpdateUser.error === true) {
+                if (dataUpdateUser.errData === true) {
                     let errorList='';
 
                     Object.keys(dataUpdateUser.errorMsg).forEach(function(key) {

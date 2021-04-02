@@ -2,7 +2,13 @@ let pengiriman = $('#pengiriman-data').DataTable({
         responsive: true,
         ajax: {
             "url":readUrl,
-            "dataSrc": 'data'
+            "dataSrc": function(data){
+                if(data.data == null){
+                    return [];
+                } else {
+                    return data.data;
+                }
+            }
         },
         columnDefs: [{
             searchable: false,
@@ -10,35 +16,35 @@ let pengiriman = $('#pengiriman-data').DataTable({
             targets: 0
         }],
         columns: [{
-            data: "id_mon",
-            defaultContent: ''
+            defaultContent: '',
+            data: 'id_mon'
         }, {
-            data: "kodejalan",
-            defaultContent: ''
+            defaultContent: '',
+            data: 'kodejalan'
         }, {
-            data: "nopol",
-            defaultContent: ''
+            defaultContent: '',
+            data: 'nopol'
         }, {
-            data: "supir",
-            defaultContent: ''
+            defaultContent: '',
+            data: 'supir'
         }, {
-            data: "pelanggan",
-            defaultContent: ''
+            defaultContent: '',
+            data: 'pelanggan'
         }, {
-            data: "start",
-            defaultContent: ''
+            defaultContent: '',
+            data: 'start'
         }, {
-            data: "end",
-            defaultContent: ''
+            defaultContent: '',
+            data: 'end'
         }, {
-            data: "status",
-            defaultContent: ''
+            defaultContent: '',
+            data: 'status'
         }, {
-            data: "tanggal",
-            defaultContent: ''
+            defaultContent: '',
+            data: 'tanggal'
         }, {
-            data: "action",
-            defaultContent: ''
+            defaultContent: '',
+            data: 'action'
         }],
         "lengthChange": true,
         "lengthMenu": [[5, 10, 25, 50, 100], [5, 10, 25, 50, 100]],
@@ -110,7 +116,7 @@ function dataMap(id) {
         dataType: "json",
         data: {"id": id},
         success: (dataMaps) => {
-            if (dataMaps.error === true) {
+            if (dataMaps.errData === true) {
                 Swal.fire("Gagal", dataMaps.message, "error");
             } else {
                 let strMap = dataMaps.data.end_mon,

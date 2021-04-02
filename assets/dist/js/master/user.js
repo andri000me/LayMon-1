@@ -1,20 +1,34 @@
 let user = $('#user-data').DataTable({
         responsive: true,
-        ajax: {"url":readUrl,"dataSrc":'data'},
+        ajax: {
+            "url":readUrl,
+            "dataSrc": function(data){
+                if(data.data == null){
+                    return [];
+                } else {
+                    return data.data;
+                }
+            }
+        },
         columnDefs: [{
-            searcable: false,
+            searchable: false,
             orderable: false,
             targets: 0
         }],
         columns: [{
+            defaultContent: '',
             data: "id_user"
         }, {
+            defaultContent: '',
             data: "username_user"
         }, {
+            defaultContent: '',
             data: "level_user"
         }, {
+            defaultContent: '',
             data: "tglbuat_user"
         }, {
+            defaultContent: '',
             data: "action"
         }],
         "lengthChange": true,
@@ -46,7 +60,7 @@ $(document).ready(function () {
             data: $(".form-create").serialize(),
             success: (dataSimpan) => {
                 reloadTable();
-                if (dataSimpan.error === true) {
+                if (dataSimpan.errData === true) {
                     let errorList='';
 
                     Object.keys(dataSimpan.errorMsg).forEach(function(key) {
@@ -78,7 +92,7 @@ $(document).ready(function () {
             data: $(".form-update").serialize(),
             success: (dataUpdate) => {
                 reloadTable();
-                if (dataUpdate.error === true) {
+                if (dataUpdate.errData === true) {
                     let errorList='';
 
                     Object.keys(dataUpdate.errorMsg).forEach(function(key) {

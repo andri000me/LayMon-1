@@ -22,7 +22,7 @@ class Api extends CI_Controller {
 			exit();
 
 			$this->result['message'] = 'Maaf anda tidak memenuhi syarat';
-			$this->result['error'] = true;
+			$this->result['errData'] = true;
 		}
 	}
 
@@ -76,18 +76,18 @@ class Api extends CI_Controller {
 			$modelInput_profile = $this->user_model->updatePass($dataInput_profile);
 
 			if ($modelInput_profile) {
-				$this->result['error'] = false;
+				$this->result['errData'] = false;
 				$this->result['message'] = 'Data password berhasil diupdate!';
 				$this->result['data'] = $dataInput_profile;
 				$this->result['redirect'] = base_url('laymon/profile');
 			} else {
-				$this->result['error'] = true;
+				$this->result['errData'] = true;
 				$this->result['message'] = 'Data password gagal diupdate!';
 				$this->result['data'] = $dataInput_profile;
 				$this->result['redirect'] = base_url('laymon/profile');
 			}
 		} else {
-			$this->result['error'] = true;
+			$this->result['errData'] = true;
 			$this->result['errorMsg'] = $this->form_validation->error_array();
 			$this->result['message'] = 'Data password gagal diupdate!';
 			$this->result['data'] = null;
@@ -123,18 +123,18 @@ class Api extends CI_Controller {
 			$modelInput_mobil = $this->mastermobil_model->simpanData($dataInput_mobil);
 
 			if ($modelInput_mobil) {
-				$this->result['error'] = false;
+				$this->result['errData'] = false;
 				$this->result['message'] = 'Data mobil berhasil disimpan!';
 				$this->result['data'] = $dataInput_mobil;
 				$this->result['redirect'] = base_url('laymon/mobil');
 			} else {
-				$this->result['error'] = true;
+				$this->result['errData'] = true;
 				$this->result['message'] = 'Data mobil gagal disimpan!';
 				$this->result['data'] = $dataInput_mobil;
 				$this->result['redirect'] = base_url('laymon/mobil');
 			}
 		} else {
-			$this->result['error'] = true;
+			$this->result['errData'] = true;
 			$this->result['errorMsg'] = $this->form_validation->error_array();
 			$this->result['message'] = 'Data mobil gagal disimpan!';
 			$this->result['data'] = null;
@@ -149,7 +149,7 @@ class Api extends CI_Controller {
 		$modelRead_mobil = $this->mastermobil_model->ambilData();
 
 		if ($modelRead_mobil) {
-			$this->result['error'] = false;
+			$this->result['errData'] = false;
 			$this->result['message'] = 'Data Mobil';
 
 			foreach ($modelRead_mobil as $valueMobil) {
@@ -163,7 +163,7 @@ class Api extends CI_Controller {
 			}
 			$this->result['data'] = $dataMobil;
 		} else {
-			$this->result['error'] = true;
+			$this->result['errData'] = true;
 			$this->result['message'] = 'Data Mobil tidak ditemukan';
 			$this->result['data'] = null;
 		}
@@ -196,18 +196,18 @@ class Api extends CI_Controller {
 			$modelUpdate_mobil = $this->mastermobil_model->updateData($dataUpdate_mobil);
 
 			if ($modelUpdate_mobil) {
-				$this->result['error'] = false;
+				$this->result['errData'] = false;
 				$this->result['message'] = 'Data mobil berhasil diupdate!';
 				$this->result['data'] = $dataUpdate_mobil;
 				$this->result['redirect'] = base_url('laymon/mobil');
 			} else {
-				$this->result['error'] = true;
+				$this->result['errData'] = true;
 				$this->result['message'] = 'Data mobil gagal diupdate!';
 				$this->result['data'] = $dataUpdate_mobil;
 				$this->result['redirect'] = base_url('laymon/mobil');
 			}
 		} else {
-			$this->result['error'] = true;
+			$this->result['errData'] = true;
 			$this->result['errorMsg'] = $this->form_validation->error_array();
 			$this->result['message'] = 'Data mobil gagal disimpan!';
 			$this->result['data'] = null;
@@ -243,18 +243,18 @@ class Api extends CI_Controller {
 			$modelInput_user = $this->user_model->create_user($dataInput_user);
 
 			if ($modelInput_user) {
-				$this->result['error'] = false;
+				$this->result['errData'] = false;
 				$this->result['message'] = 'Data user berhasil disimpan!';
 				$this->result['data'] = $dataInput_user;
 				$this->result['redirect'] = base_url('laymon/user');
 			} else {
-				$this->result['error'] = true;
+				$this->result['errData'] = true;
 				$this->result['message'] = 'Data user gagal disimpan!';
 				$this->result['data'] = $dataInput_user;
 				$this->result['redirect'] = base_url('laymon/user');
 			}
 		} else {
-			$this->result['error'] = true;
+			$this->result['errData'] = true;
 			$this->result['errorMsg'] = $this->form_validation->error_array();
 			$this->result['message'] = 'Data user gagal disimpan!';
 			$this->result['data'] = null;
@@ -269,7 +269,7 @@ class Api extends CI_Controller {
 		$modelRead_user = $this->user_model->ambilData();
 
 		if ($modelRead_user) {
-			$this->result['error'] = false;
+			$this->result['errData'] = false;
 			$this->result['message'] = 'Data Mobil';
 
 			foreach ($modelRead_user as $valueUser) {
@@ -283,7 +283,7 @@ class Api extends CI_Controller {
 			}
 			$this->result['data'] = $dataUser;
 		} else {
-			$this->result['error'] = true;
+			$this->result['errData'] = true;
 			$this->result['message'] = 'Data Mobil tidak ditemukan';
 			$this->result['data'] = null;
 		}
@@ -309,18 +309,18 @@ class Api extends CI_Controller {
 			$modelInput_user = $this->user_model->updateData($dataInput_user);
 
 			if ($modelInput_user) {
-				$this->result['error'] = false;
+				$this->result['errData'] = false;
 				$this->result['message'] = 'Data user berhasil diupdate!';
 				$this->result['data'] = $dataInput_user;
 				$this->result['redirect'] = base_url('laymon/user');
 			} else {
-				$this->result['error'] = true;
+				$this->result['errData'] = true;
 				$this->result['message'] = 'Data user gagal diupdate!';
 				$this->result['data'] = $dataInput_user;
 				$this->result['redirect'] = base_url('laymon/user');
 			}
 		} else {
-			$this->result['error'] = true;
+			$this->result['errData'] = true;
 			$this->result['errorMsg'] = $this->form_validation->error_array();
 			$this->result['message'] = 'Data user gagal diupdate!';
 			$this->result['data'] = null;
@@ -359,18 +359,18 @@ class Api extends CI_Controller {
 			$modelInput_supir = $this->mastersupir_model->simpanData($dataInput_supir);
 
 			if ($modelInput_supir) {
-				$this->result['error'] = false;
+				$this->result['errData'] = false;
 				$this->result['message'] = 'Data supir berhasil disimpan!';
 				$this->result['data'] = $dataInput_supir;
 				$this->result['redirect'] = base_url('laymon/supir');
 			} else {
-				$this->result['error'] = true;
+				$this->result['errData'] = true;
 				$this->result['message'] = 'Data supir gagal disimpan!';
 				$this->result['data'] = $dataInput_supir;
 				$this->result['redirect'] = base_url('laymon/supir');
 			}
 		} else {
-			$this->result['error'] = true;
+			$this->result['errData'] = true;
 			$this->result['errorMsg'] = $this->form_validation->error_array();
 			$this->result['message'] = 'Data supir gagal disimpan!';
 			$this->result['data'] = null;
@@ -385,7 +385,7 @@ class Api extends CI_Controller {
 		$modelRead_supir = $this->mastersupir_model->ambilData();
 
 		if ($modelRead_supir) {
-			$this->result['error'] = false;
+			$this->result['errData'] = false;
 			$this->result['message'] = 'Data Supir';
 
 			foreach ($modelRead_supir as $valueSupir) {
@@ -413,7 +413,7 @@ class Api extends CI_Controller {
 			}
 			$this->result['data'] = $dataSupir;
 		} else {
-			$this->result['error'] = true;
+			$this->result['errData'] = true;
 			$this->result['message'] = 'Data Supir tidak ditemukan';
 			$this->result['data'] = null;
 		}
@@ -451,18 +451,18 @@ class Api extends CI_Controller {
 			$modelUpdate_supir = $this->mastersupir_model->updateData($dataUpdate_supir);
 
 			if ($modelUpdate_supir) {
-				$this->result['error'] = false;
+				$this->result['errData'] = false;
 				$this->result['message'] = 'Data supir berhasil diupdate!';
 				$this->result['data'] = $dataUpdate_supir;
 				$this->result['redirect'] = base_url('laymon/supir');
 			} else {
-				$this->result['error'] = true;
+				$this->result['errData'] = true;
 				$this->result['message'] = 'Data supir gagal diupdate!';
 				$this->result['data'] = $dataUpdate_supir;
 				$this->result['redirect'] = base_url('laymon/supir');
 			}
 		} else {
-			$this->result['error'] = true;
+			$this->result['errData'] = true;
 			$this->result['errorMsg'] = $this->form_validation->error_array();
 			$this->result['message'] = 'Data supir gagal diupdate!';
 			$this->result['data'] = null;
@@ -491,18 +491,18 @@ class Api extends CI_Controller {
 			$modelUpdateUser_supir = $this->mastersupir_model->updateData($dataUpdateUser_supir);
 
 			if ($modelUpdateUser_supir) {
-				$this->result['error'] = false;
+				$this->result['errData'] = false;
 				$this->result['message'] = 'Data supir berhasil diupdate!';
 				$this->result['data'] = $dataUpdateUser_supir;
 				$this->result['redirect'] = base_url('laymon/supir');
 			} else {
-				$this->result['error'] = true;
+				$this->result['errData'] = true;
 				$this->result['message'] = 'Data supir gagal diupdate!';
 				$this->result['data'] = $dataUpdateUser_supir;
 				$this->result['redirect'] = base_url('laymon/supir');
 			}
 		} else {
-			$this->result['error'] = true;
+			$this->result['errData'] = true;
 			$this->result['errorMsg'] = $this->form_validation->error_array();
 			$this->result['message'] = 'Data supir gagal diupdate!';
 			$this->result['data'] = null;
@@ -541,18 +541,18 @@ class Api extends CI_Controller {
 			$modelInput_pelanggan = $this->masterpelanggan_model->simpanData($dataInput_pelanggan);
 
 			if ($modelInput_pelanggan) {
-				$this->result['error'] = false;
+				$this->result['errData'] = false;
 				$this->result['message'] = 'Data pelanggan berhasil disimpan!';
 				$this->result['data'] = $dataInput_pelanggan;
 				$this->result['redirect'] = base_url('laymon/pelanggan');
 			} else {
-				$this->result['error'] = true;
+				$this->result['errData'] = true;
 				$this->result['message'] = 'Data pelanggan gagal disimpan!';
 				$this->result['data'] = $dataInput_pelanggan;
 				$this->result['redirect'] = base_url('laymon/pelanggan');
 			}
 		} else {
-			$this->result['error'] = true;
+			$this->result['errData'] = true;
 			$this->result['errorMsg'] = $this->form_validation->error_array();
 			$this->result['message'] = 'Data pelanggan gagal disimpan!';
 			$this->result['data'] = null;
@@ -567,7 +567,7 @@ class Api extends CI_Controller {
 		$modelRead_pelanggan = $this->masterpelanggan_model->ambilData();
 
 		if ($modelRead_pelanggan) {
-			$this->result['error'] = false;
+			$this->result['errData'] = false;
 			$this->result['message'] = 'Data Pelanggan';
 
 			foreach ($modelRead_pelanggan as $valuePelanggan) {
@@ -595,7 +595,7 @@ class Api extends CI_Controller {
 			}
 			$this->result['data'] = $dataPelanggan;
 		} else {
-			$this->result['error'] = true;
+			$this->result['errData'] = true;
 			$this->result['message'] = 'Data Pelanggan tidak ditemukan';
 			$this->result['data'] = null;
 		}
@@ -633,18 +633,18 @@ class Api extends CI_Controller {
 			$modelUpdate_pelanggan = $this->masterpelanggan_model->updateData($dataUpdate_pelanggan);
 
 			if ($modelUpdate_pelanggan) {
-				$this->result['error'] = false;
+				$this->result['errData'] = false;
 				$this->result['message'] = 'Data pelanggan berhasil diupdate!';
 				$this->result['data'] = $dataUpdate_pelanggan;
 				$this->result['redirect'] = base_url('laymon/pelanggan');
 			} else {
-				$this->result['error'] = true;
+				$this->result['errData'] = true;
 				$this->result['message'] = 'Data pelanggan gagal diupdate!';
 				$this->result['data'] = $dataUpdate_pelanggan;
 				$this->result['redirect'] = base_url('laymon/pelanggan');
 			}
 		} else {
-			$this->result['error'] = true;
+			$this->result['errData'] = true;
 			$this->result['errorMsg'] = $this->form_validation->error_array();
 			$this->result['message'] = 'Data pelanggan gagal diupdate!';
 			$this->result['data'] = null;
@@ -673,18 +673,18 @@ class Api extends CI_Controller {
 			$modelUpdateUser_pelanggan = $this->masterpelanggan_model->updateData($dataUpdateUser_pelanggan);
 
 			if ($modelUpdateUser_pelanggan) {
-				$this->result['error'] = false;
+				$this->result['errData'] = false;
 				$this->result['message'] = 'Data pelanggan berhasil diupdate!';
 				$this->result['data'] = $dataUpdateUser_pelanggan;
 				$this->result['redirect'] = base_url('laymon/pelanggan');
 			} else {
-				$this->result['error'] = true;
+				$this->result['errData'] = true;
 				$this->result['message'] = 'Data pelanggan gagal diupdate!';
 				$this->result['data'] = $dataUpdateUser_pelanggan;
 				$this->result['redirect'] = base_url('laymon/pelanggan');
 			}
 		} else {
-			$this->result['error'] = true;
+			$this->result['errData'] = true;
 			$this->result['errorMsg'] = $this->form_validation->error_array();
 			$this->result['message'] = 'Data pelanggan gagal diupdate!';
 			$this->result['data'] = null;
@@ -706,16 +706,16 @@ class Api extends CI_Controller {
 			$modelRead_datamap = $this->pengiriman_model->dataMap_pelanggan($idM)[0];
 
 			if ($modelRead_datamap) {
-				$this->result['error'] = false;
+				$this->result['errData'] = false;
 				$this->result['message'] = 'Data Map Tujuan Pengiriman';
 				$this->result['data'] = $modelRead_datamap;
 			} else {
-				$this->result['error'] = true;
+				$this->result['errData'] = true;
 				$this->result['message'] = 'Data Map tidak ditemukan';
 				$this->result['data'] = null;
 			}
 		} else {
-			$this->result['error'] = true;
+			$this->result['errData'] = true;
 			$this->result['message'] = 'Data ID kosong atau bukan angka!';
 			$this->result['data'] = null;
 		}
@@ -728,7 +728,7 @@ class Api extends CI_Controller {
 		$modelRead_pengiriman = $this->pengiriman_model->ambilData_Status('Created');
 
 		if ($modelRead_pengiriman) {
-			$this->result['error'] = false;
+			$this->result['errData'] = false;
 			$this->result['message'] = 'Data Pengiriman';
 
 			foreach ($modelRead_pengiriman as $valuePengiriman) {
@@ -783,7 +783,7 @@ class Api extends CI_Controller {
 			}
 			$this->result['data'] = $dataPengiriman;
 		} else {
-			$this->result['error'] = true;
+			$this->result['errData'] = true;
 			$this->result['message'] = 'Data Pengiriman tidak ditemukan';
 			$this->result['data'] = null;
 		}
@@ -796,7 +796,7 @@ class Api extends CI_Controller {
 		$modelRead_pengiriman = $this->pengiriman_model->ambilData_Status('Confirmed');
 
 		if ($modelRead_pengiriman) {
-			$this->result['error'] = false;
+			$this->result['errData'] = false;
 			$this->result['message'] = 'Data Pengiriman';
 
 			foreach ($modelRead_pengiriman as $valuePengiriman) {
@@ -851,7 +851,7 @@ class Api extends CI_Controller {
 			}
 			$this->result['data'] = $dataPengiriman;
 		} else {
-			$this->result['error'] = true;
+			$this->result['errData'] = true;
 			$this->result['message'] = 'Data Pengiriman tidak ditemukan';
 			$this->result['data'] = null;
 		}
