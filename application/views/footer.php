@@ -99,9 +99,11 @@ if (isset($master) AND $master === 'mobil') {
   } else {
     $read = '';
   }
-  $dataMap = base_url('apilm/pengiriman/pemetaanmap'); ?>
+  $dataMap = base_url('apilm/pengiriman/pemetaanmap');
+  $add = base_url('apilm/pengiriman/simpan');
+  $edit = base_url('apilm/pengiriman/ubah'); ?>
 <script type="text/javascript">
-  let readUrl = '<?=$read?>',dataMapUrl = '<?=$dataMap?>';
+  let readUrl = '<?=$read?>',dataMapUrl = '<?=$dataMap?>',addUrl = '<?=$add?>',editUrl = '<?=$edit?>';
 </script>
 <script src="<?=base_url('assets/dist/js/'.$master.'.js')?>"></script>
 <?php }

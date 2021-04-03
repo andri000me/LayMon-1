@@ -11,10 +11,6 @@ class Api extends CI_Controller {
 		$this->result['deskripsi'] = "Laymon sudah didukung oleh API Laymon ".$this->config->item('laymon_version');
 
 		$this->checkSession();
-
-		$this->form_validation->set_message('customValidation', '{field} must have letter, comma, dot and space in character.');
-		$this->form_validation->set_message('customAlamat', '{field} must have letter, comma, dot, space and slash in character.');
-		$this->form_validation->set_message('customKapasitas', '{field} must consist of one of Besar, Sedang and Kecil.');
 	}
 
 	private function checkSession(){
@@ -33,24 +29,60 @@ class Api extends CI_Controller {
 	public function customValidation($str) {
 		if (preg_match('/^[\w,. \/]+$/i', $str)){
 	        return true;
+	    } else {
+	    	$this->form_validation->set_message('customValidation', '{field} must have letter, comma, dot and space in character.');
+
+	    	return false;
 	    }
 	}
 
 	public function customAlamat($str) {
 		if (preg_match('/^[\w,. \/-]+$/i', $str)){
 	        return true;
+	    } else {
+	    	$this->form_validation->set_message('customAlamat', '{field} must have letter, comma, dot, space and slash in character.');
+
+	    	return false;
+	    }
+	}
+
+	public function customSuratJalan($str) {
+		if (preg_match('/^[\w\/]+$/i', $str)){
+	        return true;
+	    } else {
+	    	$this->form_validation->set_message('customSuratJalan', '{field} harus dengan format SJ00001/01/21 (kodeunik/bulan/tahun).');
+
+	    	return false;
+	    }
+	}
+
+	public function customKordinat($str) {
+		if (preg_match('/^[\d,.\-]+$/i', $str)){
+	        return true;
+	    } else {
+	    	$this->form_validation->set_message('customKordinat', "{field} harus berupa format '-6.277874251533309,106.50886774063112'.");
+
+	    	return false;
 	    }
 	}
 
 	public function customKapasitas($str) {
 		if ($str === 'Besar' OR $str === 'Sedang' OR $str === 'Kecil'){
 	        return true;
+	    } else {
+	    	$this->form_validation->set_message('customKapasitas', '{field} must consist of one of Besar, Sedang and Kecil.');
+
+	    	return false;
 	    }
 	}
 
 	public function customLevel($str) {
 		if ($str === 'Admin' OR $str === 'Supir' OR $str === 'Pelanggan'){
 	        return true;
+	    } else {
+	    	$this->form_validation->set_message('customLevel', '{field} harus diantara Admin, Supir dan Pelanggan.');
+
+	    	return false;
 	    }
 	}
 
@@ -698,6 +730,114 @@ class Api extends CI_Controller {
 	* Pengiriman Controller
 	*/
 
+	public function pengiriman_create(){
+		$this->checkSession();
+
+		// set validation rules
+		$this->form_validation->set_rules('suratjalan', 'No Surat Jalan', 'trim|required|callback_customSuratJalan|max_length[13]|is_unique[tb_monitoring.kodejalan_mon]');
+		$this->form_validation->set_rules('mobil', 'Mobil ID', 'trim|required|numeric');
+		$this->form_validation->set_rules('supir', 'Supir ID', 'trim|required|numeric');
+		$this->form_validation->set_rules('pelanggan', 'Pelanggan ID', 'trim|required|numeric');
+		$this->form_validation->set_rules('startkordinat', 'Kordinat Asal', 'trim|required|callback_customKordinat');
+		$this->form_validation->set_rules('endkordinat', 'Kordinat Tujuan', 'trim|required|callback_customKordinat');
+
+		if ($this->form_validation->run() != false) {
+			$kodejalan_mon = $this->input->post('suratjalan');
+			$id_mobil = intval($this->input->post('mobil'));
+			$id_supir = intval($this->input->post('supir'));
+			$id_pelanggan = intval($this->input->post('pelanggan'));
+			$start_mon = $this->input->post('startkordinat');
+			$end_mon = $this->input->post('endkordinat');
+
+			$dataInput_pengiriman = array(
+				'kodejalan_mon' => $kodejalan_mon,
+				'id_mobil' => $id_mobil,
+				'id_supir' => $id_supir,
+				'id_pelanggan' => $id_pelanggan,
+				'start_mon' => $start_mon,
+				'end_mon' => $end_mon,
+				'status_mon' => 'Created'
+			);
+
+			$modelInput_pengiriman = $this->pengiriman_model->simpanData($dataInput_pengiriman);
+
+			if ($modelInput_pengiriman) {
+				$this->result['errData'] = false;
+				$this->result['message'] = 'Data pengiriman berhasil disimpan!';
+				$this->result['data'] = $dataInput_pengiriman;
+				$this->result['redirect'] = base_url('supmon/pengiriman/created');
+			} else {
+				$this->result['errData'] = true;
+				$this->result['message'] = 'Data pengiriman gagal disimpan!';
+				$this->result['data'] = $dataInput_pengiriman;
+				$this->result['redirect'] = base_url('supmon/pengiriman/created');
+			}
+		} else {
+			$this->result['errData'] = true;
+			$this->result['errorMsg'] = $this->form_validation->error_array();
+			$this->result['message'] = 'Data pengiriman gagal disimpan!';
+			$this->result['data'] = null;
+			$this->result['redirect'] = base_url('supmon/pengiriman/created');
+		}
+
+		echo json_encode($this->result, JSON_PRETTY_PRINT);
+	}
+
+	public function pengiriman_update(){
+		$this->checkSession();
+
+		// set validation rules
+		$this->form_validation->set_rules('id', 'ID Monitoring', 'trim|required|numeric');
+		$this->form_validation->set_rules('suratjalan', 'No Surat Jalan', 'trim|required|callback_customSuratJalan|max_length[13]|is_unique[tb_monitoring.kodejalan_mon]');
+		$this->form_validation->set_rules('mobil', 'Mobil ID', 'trim|required|numeric');
+		$this->form_validation->set_rules('supir', 'Supir ID', 'trim|required|numeric');
+		$this->form_validation->set_rules('pelanggan', 'Pelanggan ID', 'trim|required|numeric');
+		$this->form_validation->set_rules('startkordinat', 'Kordinat Asal', 'trim|required|callback_customKordinat');
+		$this->form_validation->set_rules('endkordinat', 'Kordinat Tujuan', 'trim|required|callback_customKordinat');
+
+		if ($this->form_validation->run() != false) {
+			$id_mon = intval($this->input->post('id'));
+			$kodejalan_mon = $this->input->post('suratjalan');
+			$id_mobil = intval($this->input->post('mobil'));
+			$id_supir = intval($this->input->post('supir'));
+			$id_pelanggan = intval($this->input->post('pelanggan'));
+			$start_mon = $this->input->post('startkordinat');
+			$end_mon = $this->input->post('endkordinat');
+
+			$dataUpdate_pengiriman = array(
+				'id_mon' => $id_mon,
+				'kodejalan_mon' => $kodejalan_mon,
+				'id_mobil' => $id_mobil,
+				'id_supir' => $id_supir,
+				'id_pelanggan' => $id_pelanggan,
+				'start_mon' => $start_mon,
+				'end_mon' => $end_mon
+			);
+
+			$modelUpdate_pengiriman = $this->pengiriman_model->updateData($dataUpdate_pengiriman);
+
+			if ($modelUpdate_pengiriman) {
+				$this->result['errData'] = false;
+				$this->result['message'] = 'Data pengiriman berhasil diupdate!';
+				$this->result['data'] = $dataUpdate_pengiriman;
+				$this->result['redirect'] = base_url('supmon/pengiriman/created');
+			} else {
+				$this->result['errData'] = true;
+				$this->result['message'] = 'Data pengiriman gagal diupdate!';
+				$this->result['data'] = $dataUpdate_pengiriman;
+				$this->result['redirect'] = base_url('supmon/pengiriman/created');
+			}
+		} else {
+			$this->result['errData'] = true;
+			$this->result['errorMsg'] = $this->form_validation->error_array();
+			$this->result['message'] = 'Data pengiriman gagal diupdate!';
+			$this->result['data'] = null;
+			$this->result['redirect'] = base_url('supmon/pengiriman/created');
+		}
+
+		echo json_encode($this->result, JSON_PRETTY_PRINT);
+	}
+
 	public function pengiriman_dataMap(){
 		$this->checkSession();
 		$idM = intval($this->input->post('id'));
@@ -768,6 +908,14 @@ class Api extends CI_Controller {
 					}
 				}
 
+				if ($this->session->userdata('role') === 'Admin') {
+					$actionVal = '<center><a href="'.base_url('laymon/pengiriman/created/agree/'.$valuePengiriman['id_mon']).'"><button type="button" class="btn btn-sm btn-success btn-flat">Approve</button></a></center>';
+				} elseif ($this->session->userdata('role') === 'Supir') {
+					$actionVal = '<center><a href="'.base_url('supmon/pengiriman/view/'.$valuePengiriman['id_mon']).'"><button type="button" class="btn btn-sm btn-warning btn-flat">Ubah</button></a> <a href="'.base_url('supmon/pengiriman/delete/'.$valuePengiriman['id_mon']).'"><button type="button" class="btn btn-sm btn-danger btn-flat">Hapus</button></a></center>';
+				} else {
+					$actionVal = '';
+				}
+
 				$dataPengiriman[] = array(
 					'id_mon' => $valuePengiriman['id_mon'],
 					'kodejalan' => $valuePengiriman['kodejalan_mon'],
@@ -778,7 +926,7 @@ class Api extends CI_Controller {
 					'end' => '<button type="button" class="btn btn-sm btn-success btn-flat" onclick="return dataMap('.$valuePengiriman['id_mon'].')">Show</button>',
 					'status' => '<span class="badge badge-info">'.$valuePengiriman['status_mon'].'</span>',
 					'tanggal' => $valuePengiriman['tglbuat_user'],
-					'action' => '<center><a href="'.base_url('laymon/pengiriman/created/agree/'.$valuePengiriman['id_mon']).'"><button type="button" class="btn btn-sm btn-success btn-flat">Approve</button></a></center>',
+					'action' => $actionVal,
 				);
 			}
 			$this->result['data'] = $dataPengiriman;

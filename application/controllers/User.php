@@ -72,9 +72,9 @@ class User extends CI_Controller {
 			  if ($user->level_user == 'Admin') {
 			    redirect(base_url('laymon'), 'refresh');
 			  } elseif ($user->level_user == 'Supir') {
-			    redirect(base_url('supir'), 'refresh');
+			    redirect(base_url('supmon'), 'refresh');
 			  } elseif ($user->level_user == 'Pelanggan') {
-			    redirect(base_url('dashboard'), 'refresh');
+			    redirect(base_url('pelmon'), 'refresh');
 			  }
 			} else {
 			  // login failed

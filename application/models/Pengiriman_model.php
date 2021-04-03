@@ -23,6 +23,14 @@ class Pengiriman_model extends CI_Model {
         return $query->result_array();
     }
 
+    public function cariData($id){
+        $this->db->from($this->tabel_pengiriman);
+        $this->db->where('id_mon', $id);
+        $query = $this->db->get();
+
+        return $query->result_array();
+    }
+
     public function dataMap_pelanggan($id){
         $this->db->select('id_mon,end_mon');
         $this->db->from($this->tabel_pengiriman);
