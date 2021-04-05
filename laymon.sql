@@ -123,7 +123,7 @@ CREATE TABLE `tb_timeline` (
   `id_timeline` bigint(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `id_mon` bigint(11) NOT NULL,
   `currentloc_timeline` text NOT NULL,
-  `tglcrloc_timeline` datetime NOT NULL
+  `tglcrloc_timeline` datetime NOT NULL DEFAULT NOW()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --

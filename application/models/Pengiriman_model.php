@@ -7,6 +7,7 @@ class Pengiriman_model extends CI_Model {
     protected $tabel_mobil = 'tb_mobil';
     protected $tabel_pelanggan = 'tb_pelanggan';
     protected $tabel_pengiriman = 'tb_monitoring';
+    protected $tabel_track = 'tb_timeline';
 
     public function __construct() {
         parent::__construct();
@@ -73,6 +74,12 @@ class Pengiriman_model extends CI_Model {
                 ->get();
 
         return $query->count();
+    }
+
+    public function simpanTrack($data = array()){
+       $this->db->insert($this->tabel_track, $data);
+
+       return TRUE;
     }
 
     public function simpanData($data = array()){

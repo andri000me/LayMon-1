@@ -453,7 +453,7 @@ $config['csrf_token_name'] = 'csrf_laymon_token';
 $config['csrf_cookie_name'] = 'csrf_laymon_cookie';
 $config['csrf_expire'] = 7200;
 $config['csrf_regenerate'] = TRUE;
-$config['csrf_exclude_uris'] = array('apilm/pengiriman/pemetaanmap');
+$config['csrf_exclude_uris'] = array('apilm/pengiriman/pemetaanmap','apilm/pengiriman/track/simpan');
 
 /*
 |--------------------------------------------------------------------------

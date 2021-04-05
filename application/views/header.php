@@ -48,7 +48,7 @@
 <link rel="stylesheet" href="<?=base_url('assets/plugins/leaflet/leaflet.css')?>">
 <!-- Custom CSS -->
 <link rel="stylesheet" href="<?=base_url('assets/dist/css/custom.css')?>">
-<?php if(isset($master) AND $master === 'pengiriman'){ ?>
+<?php if(isset($master) AND $master === 'pengiriman' OR $master === 'pengiriman-track'){ ?>
 <script src="<?=base_url('assets/plugins/leaflet/leaflet.js')?>"></script>
 <?php } ?>
 </head>

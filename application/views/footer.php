@@ -96,6 +96,8 @@ if (isset($master) AND $master === 'mobil') {
     $read = base_url('apilm/pengiriman/created/baca');
   } elseif (isset($masterData) AND $masterData === 'confirmed') {
     $read = base_url('apilm/pengiriman/confirmed/baca');
+  } elseif (isset($masterData) AND $masterData === 'approved') {
+    $read = base_url('apilm/pengiriman/approved/baca');
   } else {
     $read = '';
   }
@@ -106,6 +108,89 @@ if (isset($master) AND $master === 'mobil') {
   let readUrl = '<?=$read?>',dataMapUrl = '<?=$dataMap?>',addUrl = '<?=$add?>',editUrl = '<?=$edit?>';
 </script>
 <script src="<?=base_url('assets/dist/js/'.$master.'.js')?>"></script>
+<?php } elseif (isset($master) AND $master === 'pengiriman-track') {
+  $track = base_url('apilm/pengiriman/track/simpan'); ?>
+<script type="text/javascript">
+let trackUrl = '<?=$track?>',idMon = '<?=$id_mon?>';
+let center = null,zoom = 16,map = L.map('map'),markers = null,atLayer = null,options;
+
+function showPosition(position) {
+    trackLive(position.coords.latitude, position.coords.longitude);
+}
+
+function showError(error) {
+    switch(error.code) {
+        case error.PERMISSION_DENIED:
+            Swal.fire("Denied Access", 'User denied the request for Geolocation.', "error");
+            break;
+        case error.POSITION_UNAVAILABLE:
+            Swal.fire("Unavailable Access", 'Location information is unavailable.', "error");
+            break;
+        case error.TIMEOUT:
+            Swal.fire("Timeout Access", 'The request to get user location timed out.', "error");
+            break;
+        case error.UNKNOWN_ERROR:
+            Swal.fire("Unknow Access", 'An unknown error occurred.', "error");
+            break;
+    }
+}
+
+function trackLive(latS,longS) {
+  center = [latS, longS];
+  atLayer = new L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  });
+
+  map.setView(new L.LatLng(latS,longS), zoom);
+  map.addLayer(atLayer);
+
+  markers = L.marker(center).bindPopup("I am here").addTo(map);
+
+  // Insert Data Timeline
+  var trackLocation = ''+latS+','+longS+'';
+  let valueCsrf = document.getElementById("hashCSRF").value;
+  $.ajax({
+    url: trackUrl,
+    type: "post",
+    dataType: "json",
+    data: {"csrf_laymon_token":valueCsrf,"track":trackLocation,"idmon":idMon},
+    success: (dataTrack) => {
+      if (dataTrack.errData === true) {
+        let errorList = [];
+
+        Object.keys(dataTrack.errorMsg).forEach(function(key) {
+          errorList.push(dataTrack.errorMsg[key]);
+        });
+
+        console.log(errorList);
+      } else {
+        console.log('Track berhasil disimpan');
+      }
+    },
+    error: err => {
+      console.log(err)
+    }
+  });
+}
+
+function getTrack() {
+  options = {
+    enableHighAccuracy: true,
+    timeout: 120000,
+    maximumAge: 0
+  };
+
+  if (navigator.geolocation) {
+    navigator.geolocation.watchPosition(showPosition, showError, options);
+  } else {
+    Swal.fire("Unsupported Browser", 'Geolocation is not supported by this browser.', "error");
+  }
+}
+
+$(document).ready(function () {
+  getTrack();
+});
+</script>
 <?php }
 
 if (isset($master) AND $master === 'profile') { ?>
@@ -120,7 +205,7 @@ $(document).ready(function () {
             dataType: "json",
             data: $(".form-profile").serialize(),
             success: (dataProfile) => {
-                if (dataProfile.error === true) {
+                if (dataProfile.errData === true) {
                     let errorList='';
 
                     Object.keys(dataProfile.errorMsg).forEach(function(key) {

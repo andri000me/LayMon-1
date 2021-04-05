@@ -15,13 +15,23 @@ class Supir extends CI_Controller {
 	}
 
 	public function index(){
-		$data['home_url'] = 'supmon';
-		$data ['sub_title'] = 'Administrator';
-		$data['master'] = 'dashboard';
+		if ($this->session->userdata('role') != 'Supir') {
+			echo "<script>alert('Halaman ini hanya untuk hak akses supir saja!')</script>";
 
-		$this->load->view('header', $data);
-		$this->load->view('dashboard', $data);
-		$this->load->view('footer', $data);
+			if ($this->session->userdata('role') === 'Admin') {
+				redirect('laymon', 'refresh');
+			} elseif ($this->session->userdata('role') === 'Pelanggan') {
+				redirect('pelmon', 'refresh');
+			}
+		} else {
+			$data['home_url'] = 'supmon';
+			$data ['sub_title'] = 'Administrator';
+			$data['master'] = 'dashboard';
+
+			$this->load->view('header', $data);
+			$this->load->view('dashboard', $data);
+			$this->load->view('footer', $data);
+		}
 	}
 
 	/*
@@ -29,115 +39,184 @@ class Supir extends CI_Controller {
 	*/
 
 	public function pengiriman_Data($status = null){
-		if ($status === null) {
-			show_404();
+		if ($this->session->userdata('role') != 'Supir') {
+			echo "<script>alert('Halaman ini hanya untuk hak akses supir saja!')</script>";
+
+			if ($this->session->userdata('role') === 'Admin') {
+				redirect('laymon', 'refresh');
+			} elseif ($this->session->userdata('role') === 'Pelanggan') {
+				redirect('pelmon', 'refresh');
+			}
 		} else {
-			if ($status === 'created') {
-				$data['home_url'] = 'supmon';
-				$data ['sub_title'] = 'Administrator';
-				$data['master'] = 'pengiriman';
-				$data['masterData'] = $status;
+			if ($status === null) {
+				show_404();
+			} else {
+				if ($status === 'created') {
+					$data['home_url'] = 'supmon';
+					$data ['sub_title'] = 'Administrator';
+					$data['master'] = 'pengiriman';
+					$data['masterData'] = $status;
 
-				$this->load->view('header', $data);
-				$this->load->view('supir/pengiriman/pengiriman_data', $data);
-				$this->load->view('footer', $data);
-			} elseif ($status === 'confirmed') {
-				$data['home_url'] = 'supmon';
-				$data ['sub_title'] = 'Administrator';
-				$data['master'] = 'pengiriman';
-				$data['masterData'] = $status;
+					$this->load->view('header', $data);
+					$this->load->view('supir/pengiriman/pengiriman_data', $data);
+					$this->load->view('footer', $data);
+				} elseif ($status === 'approved') {
+					$data['home_url'] = 'supmon';
+					$data ['sub_title'] = 'Administrator';
+					$data['master'] = 'pengiriman';
+					$data['masterData'] = $status;
 
-				$this->load->view('header', $data);
-				$this->load->view('supir/pengiriman/pengiriman_data', $data);
-				$this->load->view('footer', $data);
-			} elseif ($status === 'add') {
-				$data['home_url'] = 'supmon';
-				$data ['sub_title'] = 'Administrator';
-				$data['master'] = 'pengiriman';
+					$this->load->view('header', $data);
+					$this->load->view('supir/pengiriman/pengiriman_data', $data);
+					$this->load->view('footer', $data);
+				} elseif ($status === 'add') {
+					$data['home_url'] = 'supmon';
+					$data ['sub_title'] = 'Administrator';
+					$data['master'] = 'pengiriman';
 
-				$data['csrf'] = array(
-					'name' => $this->security->get_csrf_token_name(),
-					'hash' => $this->security->get_csrf_hash()
+					$data['csrf'] = array(
+						'name' => $this->security->get_csrf_token_name(),
+						'hash' => $this->security->get_csrf_hash()
+					);
+
+					$data['datasMobil'] = $this->mastermobil_model->ambilData();
+					$data['datasSupir'] = $this->mastersupir_model->ambilData();
+					$data['datasPelanggan'] = $this->masterpelanggan_model->ambilData();
+
+					$this->load->view('header', $data);
+					$this->load->view('supir/pengiriman/create', $data);
+					$this->load->view('footer', $data);
+				} else {
+					show_404();
+				}
+			}
+		}
+	}
+
+	public function livemonitoring($id){
+		if ($this->session->userdata('role') != 'Supir') {
+			echo "<script>alert('Halaman ini hanya untuk hak akses supir saja!')</script>";
+
+			if ($this->session->userdata('role') === 'Admin') {
+				redirect('laymon', 'refresh');
+			} elseif ($this->session->userdata('role') === 'Pelanggan') {
+				redirect('pelmon', 'refresh');
+			}
+		} else {
+			$dataDenny = ($this->pengiriman_model->cariData($id)) ? $this->pengiriman_model->cariData($id)[0] : '';
+
+			if (is_array($dataDenny)) {
+				$dataProgress = array(
+					'id_mon' => intval($id),
+					'status_mon' => 'Progress'
 				);
 
-				$data['datasMobil'] = $this->mastermobil_model->ambilData();
-				$data['datasSupir'] = $this->mastersupir_model->ambilData();
-				$data['datasPelanggan'] = $this->masterpelanggan_model->ambilData();
+				$modelProgress_pengiriman = $this->pengiriman_model->updateData($dataProgress);
 
-				$this->load->view('header', $data);
-				$this->load->view('supir/pengiriman/create', $data);
-				$this->load->view('footer', $data);
+				if ($modelProgress_pengiriman) {
+					$data['home_url'] = 'supmon';
+					$data ['sub_title'] = 'Administrator';
+					$data['master'] = 'pengiriman-track';
+
+					$data['csrf'] = array(
+						'name' => $this->security->get_csrf_token_name(),
+						'hash' => $this->security->get_csrf_hash()
+					);
+
+					$data['id_mon'] = $id;
+
+					$this->load->view('header', $data);
+					$this->load->view('supir/pengiriman/track', $data);
+					$this->load->view('footer', $data);
+				} else {
+					echo "<script>alert('Data pengiriman gagal diupdate!')</script>";
+					redirect('supmon/pengiriman/approved', 'refresh');
+				}
 			} else {
-				show_404();
+				echo "<script>alert('Data tidak ditemukan!')</script>";
+				redirect('supmon/pengiriman/approved', 'refresh');
 			}
 		}
 	}
 
 	public function mon_edit($id){
-		$data['home_url'] = 'supmon';
-		$data ['sub_title'] = 'Administrator';
-		$data['master'] = 'pengiriman';
+		if ($this->session->userdata('role') != 'Supir') {
+			echo "<script>alert('Halaman ini hanya untuk hak akses supir saja!')</script>";
 
-		$data['csrf'] = array(
-			'name' => $this->security->get_csrf_token_name(),
-			'hash' => $this->security->get_csrf_hash()
-		);
+			if ($this->session->userdata('role') === 'Admin') {
+				redirect('laymon', 'refresh');
+			} elseif ($this->session->userdata('role') === 'Pelanggan') {
+				redirect('pelmon', 'refresh');
+			}
+		} else {
+			$data['home_url'] = 'supmon';
+			$data ['sub_title'] = 'Administrator';
+			$data['master'] = 'pengiriman';
 
-		$data['datasMobil'] = $this->mastermobil_model->ambilData();
-		$data['datasSupir'] = $this->mastersupir_model->ambilData();
-		$data['datasPelanggan'] = $this->masterpelanggan_model->ambilData();
+			$data['csrf'] = array(
+				'name' => $this->security->get_csrf_token_name(),
+				'hash' => $this->security->get_csrf_hash()
+			);
 
-		$data['id_mon'] = $id;
-		$data['dataPengiriman'] = $this->pengiriman_model->cariData($id)[0];
+			$data['datasMobil'] = $this->mastermobil_model->ambilData();
+			$data['datasSupir'] = $this->mastersupir_model->ambilData();
+			$data['datasPelanggan'] = $this->masterpelanggan_model->ambilData();
 
-		$this->load->view('header', $data);
-		$this->load->view('supir/pengiriman/update', $data);
-		$this->load->view('footer', $data);
+			$data['id_mon'] = $id;
+			$data['dataPengiriman'] = $this->pengiriman_model->cariData($id)[0];
+
+			$this->load->view('header', $data);
+			$this->load->view('supir/pengiriman/update', $data);
+			$this->load->view('footer', $data);
+		}
 	}
 
 	public function mon_delete($id){
-		$modelHapus_pengiriman = $this->pengiriman_model->hapusData($id);
+		if ($this->session->userdata('role') != 'Supir') {
+			echo "<script>alert('Halaman ini hanya untuk hak akses supir saja!')</script>";
 
-		if ($modelHapus_pengiriman) {
-			echo "<script>alert('Data pengiriman berhasil dihapus!')</script>";
-			redirect('supmon/pengiriman/created', 'refresh');
+			if ($this->session->userdata('role') === 'Admin') {
+				redirect('laymon', 'refresh');
+			} elseif ($this->session->userdata('role') === 'Pelanggan') {
+				redirect('pelmon', 'refresh');
+			}
 		} else {
-			echo "<script>alert('Data pengiriman gagal dihapus!')</script>";
-			redirect('supmon/pengiriman/created', 'refresh');
+			$modelHapus_pengiriman = $this->pengiriman_model->hapusData($id);
+
+			if ($modelHapus_pengiriman) {
+				echo "<script>alert('Data pengiriman berhasil dihapus!')</script>";
+				redirect('supmon/pengiriman/created', 'refresh');
+			} else {
+				echo "<script>alert('Data pengiriman gagal dihapus!')</script>";
+				redirect('supmon/pengiriman/created', 'refresh');
+			}
 		}
 	}
 
-	public function pengiriman_createdApprove($id){
-		$dataApprove = array(
-			'id_mon' => intval($id),
-			'status_mon' => 'Approved'
-		);
+	public function pengiriman_arrivedApprove($id){
+		if ($this->session->userdata('role') != 'Supir') {
+			echo "<script>alert('Halaman ini hanya untuk hak akses supir saja!')</script>";
 
-		$modelApprove_pengiriman = $this->pengiriman_model->updateData($dataApprove);
-
-		if ($modelApprove_pengiriman) {
-			echo "<script>alert('Data pengiriman berhasil diapprove!')</script>";
-			redirect('supmon/pengiriman/created', 'refresh');
+			if ($this->session->userdata('role') === 'Admin') {
+				redirect('laymon', 'refresh');
+			} elseif ($this->session->userdata('role') === 'Pelanggan') {
+				redirect('pelmon', 'refresh');
+			}
 		} else {
-			echo "<script>alert('Data pengiriman gagal diapprove!')</script>";
-			redirect('supmon/pengiriman/created', 'refresh');
-		}
-	}
+			$dataArrived = array(
+				'id_mon' => intval($id),
+				'status_mon' => 'Arrived'
+			);
 
-	public function pengiriman_confirmedApprove($id){
-		$dataApprove = array(
-			'id_mon' => intval($id),
-			'status_mon' => 'Completed'
-		);
+			$modelArrived_pengiriman = $this->pengiriman_model->updateData($dataArrived);
 
-		$modelApprove_pengiriman = $this->pengiriman_model->updateData($dataApprove);
-
-		if ($modelApprove_pengiriman) {
-			echo "<script>alert('Data pengiriman berhasil dikonfirmasi!')</script>";
-			redirect('laymon/pengiriman/created', 'refresh');
-		} else {
-			echo "<script>alert('Data pengiriman gagal dikonfirmasi!')</script>";
-			redirect('laymon/pengiriman/created', 'refresh');
+			if ($modelArrived_pengiriman) {
+				echo "<script>alert('Data pengiriman berhasil diupdate!')</script>";
+				redirect('supmon/pengiriman/approved', 'refresh');
+			} else {
+				echo "<script>alert('Data pengiriman gagal diupdate!')</script>";
+				redirect('supmon/pengiriman/approved', 'refresh');
+			}
 		}
 	}
 }

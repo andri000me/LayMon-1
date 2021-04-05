@@ -1006,4 +1006,109 @@ class Api extends CI_Controller {
 
 		echo json_encode($this->result, JSON_PRETTY_PRINT);
 	}
+
+	public function pengirimanApproved_read(){
+		$this->checkSession();
+		$modelRead_pengiriman = $this->pengiriman_model->ambilData_Status('Approved');
+
+		if ($modelRead_pengiriman) {
+			$this->result['errData'] = false;
+			$this->result['message'] = 'Data Pengiriman';
+
+			foreach ($modelRead_pengiriman as $valuePengiriman) {
+				if ($valuePengiriman['id_mobil'] === 0 OR empty($valuePengiriman['id_mobil'])) {
+					$nopol_mobil = '';
+				} else {
+					$modelReadNOPOL_mobil = $this->pengiriman_model->cariData_Mobil($valuePengiriman['id_mobil']);
+					
+					if ($modelReadNOPOL_mobil) {
+						$nopol_mobil = $modelReadNOPOL_mobil[0]['nopol_mobil'];
+					} else {
+						$nopol_mobil = '';
+					}
+				}
+
+				if ($valuePengiriman['id_pelanggan'] === 0 OR empty($valuePengiriman['id_pelanggan'])) {
+					$nama_pelanggan = '';
+				} else {
+					$modelReadNAMA_pelanggan = $this->pengiriman_model->cariData_Pelanggan($valuePengiriman['id_pelanggan']);
+					
+					if ($modelReadNAMA_pelanggan) {
+						$nama_pelanggan = $modelReadNAMA_pelanggan[0]['nama_pelanggan'];
+					} else {
+						$nama_pelanggan = '';
+					}
+				}
+
+				if ($valuePengiriman['id_supir'] === 0 OR empty($valuePengiriman['id_supir'])) {
+					$nama_supir = '';
+				} else {
+					$modelReadNAMA_supir = $this->pengiriman_model->cariData_Supir($valuePengiriman['id_supir']);
+					
+					if ($modelReadNAMA_supir) {
+						$nama_supir = $modelReadNAMA_supir[0]['nama_supir'];
+					} else {
+						$nama_supir = '';
+					}
+				}
+
+				$dataPengiriman[] = array(
+					'id_mon' => $valuePengiriman['id_mon'],
+					'kodejalan' => $valuePengiriman['kodejalan_mon'],
+					'nopol' => $nopol_mobil,
+					'supir' => $nama_supir,
+					'pelanggan' => $nama_pelanggan,
+					'start' => $valuePengiriman['start_mon'],
+					'end' => '<button type="button" class="btn btn-sm btn-success btn-flat" onclick="return dataMap('.$valuePengiriman['id_mon'].')">Show</button>',
+					'status' => '<span class="badge badge-info">'.$valuePengiriman['status_mon'].'</span>',
+					'tanggal' => $valuePengiriman['tglbuat_user'],
+					'action' => '<center><a href="'.base_url('supmon/monitoring/live/'.$valuePengiriman['id_mon']).'"><button type="button" class="btn btn-sm btn-success btn-flat">Mulai Kirim</button></a></center>',
+				);
+			}
+			$this->result['data'] = $dataPengiriman;
+		} else {
+			$this->result['errData'] = true;
+			$this->result['message'] = 'Data Pengiriman tidak ditemukan';
+			$this->result['data'] = null;
+		}
+
+		echo json_encode($this->result, JSON_PRETTY_PRINT);
+	}
+
+	public function pengirimanTrack_create(){
+		$this->checkSession();
+
+		// set validation rules
+		$this->form_validation->set_rules('idmon', 'ID Monitoring', 'trim|required|numeric');
+		$this->form_validation->set_rules('track', 'Lokasi Terkini', 'trim|required|callback_customKordinat');
+
+		if ($this->form_validation->run() != false) {
+			$id_mon = intval($this->input->post('idmon'));
+			$currentloc_timeline = $this->input->post('track');
+
+			$dataInputTrack_pengiriman = array(
+				'id_mon' => $id_mon,
+				'currentloc_timeline' => $currentloc_timeline
+			);
+
+			$modelInputTrack_pengiriman = $this->pengiriman_model->simpanTrack($dataInputTrack_pengiriman);
+
+			if ($modelInputTrack_pengiriman) {
+				$this->result['errData'] = false;
+				$this->result['message'] = 'Data pengiriman berhasil disimpan!';
+				$this->result['data'] = $dataInputTrack_pengiriman;
+			} else {
+				$this->result['errData'] = true;
+				$this->result['message'] = 'Data pengiriman gagal disimpan!';
+				$this->result['data'] = $dataInputTrack_pengiriman;
+			}
+		} else {
+			$this->result['errData'] = true;
+			$this->result['errorMsg'] = $this->form_validation->error_array();
+			$this->result['message'] = 'Data pengiriman gagal disimpan!';
+			$this->result['data'] = null;
+		}
+
+		echo json_encode($this->result, JSON_PRETTY_PRINT);
+	}
 }
