@@ -100,8 +100,8 @@ CREATE TABLE `tb_monitoring` (
   `id_mobil` bigint(11) NOT NULL DEFAULT 0,
   `id_supir` bigint(11) NOT NULL DEFAULT 0,
   `id_pelanggan` bigint(11) NOT NULL DEFAULT 0,
-  `start_mon` text NOT NULL,
-  `end_mon` text NOT NULL,
+  `start_mon` varchar(50) NOT NULL,
+  `end_mon` varchar(50) NOT NULL,
   `status_mon` ENUM('Created','Approved','Progress','Arrived','Confirmed','Completed') NOT NULL,
   `tglbuat_user` datetime NOT NULL DEFAULT NOW()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -122,7 +122,7 @@ DROP TABLE IF EXISTS `tb_timeline`;
 CREATE TABLE `tb_timeline` (
   `id_timeline` bigint(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `id_mon` bigint(11) NOT NULL,
-  `currentloc_timeline` text NOT NULL,
+  `currentloc_timeline` varchar(50) NOT NULL,
   `tglcrloc_timeline` datetime NOT NULL DEFAULT NOW()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
